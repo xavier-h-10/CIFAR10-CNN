@@ -5,7 +5,7 @@ import torchvision
 import torchvision.transforms as transforms
 import argparse
 from resnet import ResNet18
-from resnet_all import ResNet34
+from resnet_all import ResNet34, ResNet50
 import numpy as np
 import random
 import ssl
@@ -27,6 +27,8 @@ setup_seed(2021)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 print(torch.cuda.get_device_name(0))
+if torch.cuda.device_count()>1:
+    print(torch.cuda.get_device_name(1))
 
 # 参数设置,使得我们能够手动输入命令行参数，就是让风格变得和Linux命令行差不多
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
@@ -40,25 +42,25 @@ pre_epoch = 0  # 定义已经遍历数据集的次数
 BATCH_SIZE = 128  # 批处理尺寸(batch_size)
 LR = 0.1  # 学习率
 
-# 准备数据集并预处理
-transform_train_amplified1 = transforms.Compose([
-    transforms.RandomCrop(32, padding=4),  # 先四周填充0，再把图像随机裁剪成32*32
-    transforms.RandomHorizontalFlip(),  # 图像一半的概率翻转，一半的概率不翻转
-    transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
-])
-
-transform_train_amplified2 = transforms.Compose([
-    transforms.RandomAffine(degrees=20),
-    transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
-])
-
-transform_train_amplified3 = transforms.Compose([
-    transforms.ColorJitter(brightness=0.2, saturation=0.1),
-    transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
-])
+# # 准备数据集并预处理
+# transform_train_amplified1 = transforms.Compose([
+#     transforms.RandomCrop(32, padding=4),  # 先四周填充0，再把图像随机裁剪成32*32
+#     transforms.RandomHorizontalFlip(),  # 图像一半的概率翻转，一半的概率不翻转
+#     transforms.ToTensor(),
+#     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
+# ])
+#
+# transform_train_amplified2 = transforms.Compose([
+#     transforms.RandomAffine(degrees=20),
+#     transforms.ToTensor(),
+#     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
+# ])
+#
+# transform_train_amplified3 = transforms.Compose([
+#     transforms.ColorJitter(brightness=0.2, saturation=0.1),
+#     transforms.ToTensor(),
+#     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
+# ])
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
@@ -69,18 +71,18 @@ transform_test = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
-trainset_amplied1 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
-                                                 transform=transform_train_amplified1)
-trainset_amplied2 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
-                                                 transform=transform_train_amplified2)
-trainset_amplied3 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
-                                                 transform=transform_train_amplified3)
+# trainset_amplied1 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
+#                                                  transform=transform_train_amplified1)
+# trainset_amplied2 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
+#                                                  transform=transform_train_amplified2)
+# trainset_amplied3 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
+#                                                  transform=transform_train_amplified3)
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)  # 训练数据集
 print(trainset.data.shape)
 
-trainset = trainset.__add__(trainset_amplied1)
-trainset = trainset.__add__(trainset_amplied2)
-trainset = trainset.__add__(trainset_amplied3)
+# trainset = trainset.__add__(trainset_amplied1)
+# trainset = trainset.__add__(trainset_amplied2)
+# trainset = trainset.__add__(trainset_amplied3)
 
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True,
                                           num_workers=2)  # 生成一个个batch进行批训练，组成batch的时候顺序打乱取
@@ -93,7 +95,15 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 # 模型定义-ResNet
 # net = ResNet18().to(device)
 
-net = ResNet18().to(device)
+# net = ResNet50().to(device)
+
+# resnet改为data parallel的模型
+net = ResNet50()
+if torch.cuda.device_count() > 1:
+    print("Now use", torch.cuda.device_count(), "GPUs!")
+    net = nn.DataParallel(net)
+
+net = net.to(device)
 
 # 定义损失函数和优化方式
 criterion = nn.CrossEntropyLoss()  # 损失函数为交叉熵，多用于多分类问题
@@ -105,7 +115,7 @@ scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 # 训练
 if __name__ == "__main__":
     best_acc = 85  # 2 初始化best test accuracy
-    print("Start Training, Resnet-18!")  # 定义遍历数据集的次数
+    print("Start Training, Resnet-50!")  # 定义遍历数据集的次数
     with open("acc.txt", "w") as f:
         with open("log.txt", "w") as f2:
             for epoch in range(pre_epoch, EPOCH):
@@ -157,7 +167,7 @@ if __name__ == "__main__":
                     acc = 100. * correct / total
                     # 将每次测试结果实时写入acc.txt文件中
                     print('Saving model......')
-                    # torch.save(net.state_dict(), '%s/net_%03d.pth' % (args.outf, epoch + 1))
+                    # torch.save(net.state_dict(), 'model/net_%03d.pth' % ( epoch + 1))
                     f.write("EPOCH=%03d,Accuracy= %.3f%%" % (epoch + 1, acc))
                     f.write('\n')
                     f.flush()
