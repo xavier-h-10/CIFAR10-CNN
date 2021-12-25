@@ -6,6 +6,7 @@ import torchvision.transforms as transforms
 import argparse
 from resnet import ResNet18
 from resnet_all import ResNet34, ResNet50
+from lenet import LeNet
 import numpy as np
 import random
 import ssl
@@ -136,9 +137,11 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False,
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
 # net = ResNet18().to(device)
-net = ResNet18().to(device)
+# net = ResNet18().to(device)
 
 # net = ResNet50().to(device)
+
+net = LeNet().to(device)
 
 # resnet改为data parallel的模型
 # net = ResNet50()
