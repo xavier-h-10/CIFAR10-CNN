@@ -9,6 +9,7 @@ from tensorboardX import SummaryWriter
 from model import Net
 import ssl
 import random
+import time
 
 
 def setup_seed(seed):
@@ -17,6 +18,13 @@ def setup_seed(seed):
     np.random.seed(seed)
     random.seed(seed)
     torch.backends.cudnn.deterministic = True
+
+
+def imshow(img):
+    img = img / 2 + 0.5  # unnormalize
+    npimg = img.numpy()
+    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+    plt.show()
 
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -41,14 +49,6 @@ train_on_gpu = True
 # functions to show an image
 device = torch.device("cuda:0" if train_on_gpu else "cpu")
 
-
-def imshow(img):
-    img = img / 2 + 0.5  # unnormalize
-    npimg = img.numpy()
-    plt.imshow(np.transpose(npimg, (1, 2, 0)))
-    plt.show()
-
-
 # get some random training images
 dataiter = iter(trainloader)
 images, labels = dataiter.next()
@@ -68,7 +68,9 @@ dummy_input = torch.rand(batch_size, 3, 32, 32).to(device)
 with SummaryWriter(comment='model') as w:
     w.add_graph(net, dummy_input)
 
-for epoch in range(2):  # loop over the dataset multiple times
+start_time = time.time()
+
+for epoch in range(100):  # loop over the dataset multiple times
     print("start training...")
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
@@ -89,9 +91,11 @@ for epoch in range(2):  # loop over the dataset multiple times
         # print statistics
         running_loss += loss.item()
         if i % 2000 == 1999:  # print every 2000 mini-batches
-            print('[%d, %5d] loss: %.3f' %
-                  (epoch + 1, i + 1, running_loss / 2000))
+            end_time = time.time()
+            print('[%d, %5d] loss: %.3f training_time: %.6f s' %
+                  (epoch + 1, i + 1, running_loss / 2000, end_time - start_time))
             running_loss = 0.0
+            start_time = end_time
 
 print('Finished Training')
 PATH = './cifar_net.pth'
