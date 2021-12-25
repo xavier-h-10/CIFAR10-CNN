@@ -12,6 +12,21 @@ import random
 import time
 
 
+def show_kernel(model):
+    # 可视化卷积核
+    for name, param in model.named_parameters():
+        torch.no_grad()
+        if 'conv' in name and 'weight' in name:
+            with SummaryWriter(comment='model') as w:
+                in_channels = param.size()[1]
+                out_channels = param.size()[0]  # 输出通道，表示卷积核的个数
+                k_w, k_h = param.size()[3], param.size()[2]  # 卷积核的尺寸
+                kernel_all = param.view(-1, 1, k_w, k_h)  # 每个通道的卷积核
+                # print(kernel_all)
+                kernel_grid = torchvision.utils.make_grid(kernel_all)
+                w.add_image(f'{name}_all', kernel_grid, global_step=0)
+
+
 def setup_seed(seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
@@ -103,10 +118,12 @@ def main():
                     running_loss = 0.0
                     w.add_scalar('loss', running_loss, epoch)
                     start_time = end_time
+                    show_kernel(net)
 
     print('Finished Training')
     PATH = './cifar_net.pth'
     torch.save(net.state_dict(), PATH)
+
 
 if __name__ == "__main__":
     main()
