@@ -9,6 +9,7 @@ from resnet_all import ResNet34
 import numpy as np
 import random
 import ssl
+import matplotlib.pyplot as plt
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -19,6 +20,24 @@ def setup_seed(seed):
     np.random.seed(seed)
     random.seed(seed)
     torch.backends.cudnn.deterministic = True
+
+
+def imshow(img):
+    # img = img / 2 + 0.5  # unnormalize
+    npimg = img.numpy()
+    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+    plt.show()
+
+
+def show_some_data(dataset, num=1):
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=5, shuffle=False,
+                                             num_workers=0)
+    cnt = 0
+    for inputs, labels in dataloader:
+        if cnt >= num:
+            return
+        imshow(torchvision.utils.make_grid(inputs))
+        cnt += 1
 
 
 setup_seed(2021)
@@ -39,35 +58,49 @@ EPOCH = 135  # 遍历数据集次数
 pre_epoch = 0  # 定义已经遍历数据集的次数
 BATCH_SIZE = 128  # 批处理尺寸(batch_size)
 LR = 0.1  # 学习率
+mean = [0.4914, 0.4822, 0.4465]
+std = [0.2023, 0.1994, 0.2010]
 
 # 准备数据集并预处理
 transform_train_amplified1 = transforms.Compose([
     transforms.RandomCrop(32, padding=4),  # 先四周填充0，再把图像随机裁剪成32*32
     transforms.RandomHorizontalFlip(),  # 图像一半的概率翻转，一半的概率不翻转
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
+    transforms.Normalize(mean=mean, std=std),  # R,G,B每层的归一化用到的均值和方差
 ])
+
+amplified_trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
+                                                  transform=transform_train_amplified1)
+show_some_data(amplified_trainset)
 
 transform_train_amplified2 = transforms.Compose([
     transforms.RandomAffine(degrees=20),
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
+    transforms.Normalize(mean=mean, std=std),  # R,G,B每层的归一化用到的均值和方差
 ])
+
+amplified_trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
+                                                  transform=transform_train_amplified2)
+show_some_data(amplified_trainset)
 
 transform_train_amplified3 = transforms.Compose([
     transforms.ColorJitter(brightness=0.2, saturation=0.1),
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
+    transforms.Normalize(mean=mean, std=std),  # R,G,B每层的归一化用到的均值和方差
 ])
+
+amplified_trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
+                                                  transform=transform_train_amplified3)
+show_some_data(amplified_trainset)
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
+    transforms.Normalize(mean=mean, std=std),  # R,G,B每层的归一化用到的均值和方差
 ])
 
 transform_test = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    transforms.Normalize(mean=mean, std=std),
 ])
 trainset_amplied1 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
                                                  transform=transform_train_amplified1)
@@ -76,7 +109,6 @@ trainset_amplied2 = torchvision.datasets.CIFAR10(root='./data', train=True, down
 trainset_amplied3 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
                                                  transform=transform_train_amplified3)
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)  # 训练数据集
-print(trainset.data.shape)
 
 trainset = trainset.__add__(trainset_amplied1)
 trainset = trainset.__add__(trainset_amplied2)
@@ -87,27 +119,23 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuff
 
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
 testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)
-# Cifar-10的标签
+
+# classes
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-# 模型定义-ResNet
 # net = ResNet18().to(device)
-
 net = ResNet18().to(device)
 
-# 定义损失函数和优化方式
-criterion = nn.CrossEntropyLoss()  # 损失函数为交叉熵，多用于多分类问题
+criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=LR, momentum=0.9,
-                      weight_decay=5e-4)  # 优化方式为mini-batch momentum-SGD，并采用L2正则化（权重衰减）
+                      weight_decay=5e-4)
 scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
-# optimizer = optim.Adam(net.parameters(), lr=LR, betas=(0.9, 0.99), weight_decay=5e-4)
 
 # 训练
 if __name__ == "__main__":
-    best_acc = 85  # 2 初始化best test accuracy
-    print("Start Training, Resnet-18!")  # 定义遍历数据集的次数
-    with open("acc.txt", "w") as f:
-        with open("log.txt", "w") as f2:
+    best_acc = 85  # 初始化best test accuracy
+    with open("acc.txt", "w") as acc_file:
+        with open("log.txt", "w") as log_file:
             for epoch in range(pre_epoch, EPOCH):
                 print('\nEpoch: %d' % (epoch + 1))
                 net.train()
@@ -115,7 +143,7 @@ if __name__ == "__main__":
                 correct = 0.0
                 total = 0.0
                 for i, data in enumerate(trainloader, 0):
-                    # 准备数据
+                    # preparation
                     length = len(trainloader)
                     inputs, labels = data
                     inputs, labels = inputs.to(device), labels.to(device)
@@ -134,13 +162,12 @@ if __name__ == "__main__":
                     correct += predicted.eq(labels.data).cpu().sum()
                     print('[epoch:%d, iter:%d] Loss: %.03f | Acc: %.3f%% '
                           % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), 100. * correct / total))
-                    f2.write('%03d  %05d |Loss: %.03f | Acc: %.3f%% '
-                             % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), 100. * correct / total))
-                    f2.write('\n')
-                    f2.flush()
+                    log_file.write('%03d  %05d |Loss: %.03f | Acc: %.3f%% '
+                                   % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), 100. * correct / total))
+                    log_file.write('\n')
+                    log_file.flush()
 
-                # 每训练完一个epoch测试一下准确率
-                print("Waiting Test!")
+                print("Starting test...")
                 with torch.no_grad():
                     correct = 0
                     total = 0
@@ -149,25 +176,22 @@ if __name__ == "__main__":
                         images, labels = data
                         images, labels = images.to(device), labels.to(device)
                         outputs = net(images)
-                        # 取得分最高的那个类 (outputs.data的索引号)
                         _, predicted = torch.max(outputs.data, 1)
                         total += labels.size(0)
                         correct += (predicted == labels).sum()
                     print('测试分类准确率为：%.3f%%' % (100 * correct / total))
                     acc = 100. * correct / total
-                    # 将每次测试结果实时写入acc.txt文件中
                     print('Saving model......')
                     # torch.save(net.state_dict(), '%s/net_%03d.pth' % (args.outf, epoch + 1))
-                    f.write("EPOCH=%03d,Accuracy= %.3f%%" % (epoch + 1, acc))
-                    f.write('\n')
-                    f.flush()
+                    acc_file.write("EPOCH=%03d,Accuracy= %.3f%%" % (epoch + 1, acc))
+                    acc_file.write('\n')
+                    acc_file.flush()
                     # 记录最佳测试分类准确率并写入best_acc.txt文件中
                     if acc > best_acc:
-                        f3 = open("best_acc.txt", "w")
-                        f3.write("EPOCH=%d,best_acc= %.3f%%" % (epoch + 1, acc))
-                        f3.close()
-                        best_acc = acc
-
+                        with open("best_acc.txt", "w") as f:
+                            f.write("EPOCH=%d,best_acc= %.3f%%" % (epoch + 1, acc))
+                            f.close()
+                            best_acc = acc
                 scheduler.step()
 
             print("Training Finished, TotalEPOCH=%d" % EPOCH)
