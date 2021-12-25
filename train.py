@@ -47,24 +47,24 @@ def main():
 
     setup_seed(2021)
 
-    print(torch.cuda.is_available())
-    print(torch.cuda.device_count())
-    print(torch.cuda.get_device_name(0))
-    print(torch.cuda.current_device())
-
     transform = transforms.Compose(
         [transforms.ToTensor(),
          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    batch_size = 4
+    batch_size = 16
 
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
                                             download=True, transform=transform)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
-                                              shuffle=True, num_workers=0)
+                                              shuffle=True, num_workers=4, pin_memory=True)
 
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
+    print(torch.cuda.is_available())
+    print(torch.cuda.device_count())
+    print(torch.cuda.get_device_name(0))
+    print(torch.cuda.current_device())
 
     train_on_gpu = True
     # functions to show an image
@@ -89,36 +89,35 @@ def main():
     with SummaryWriter(comment='model') as w:
         w.add_graph(net, dummy_input)
 
-        start_time = time.time()
+    start_time = time.time()
 
-        for epoch in range(100):  # loop over the dataset multiple times
-            print("start training...")
-            running_loss = 0.0
-            for i, data in enumerate(trainloader, 0):
-                # print("Train data...")
+    for epoch in range(10):  # loop over the dataset multiple times
+        print("start training...")
+        running_loss = 0.0
+        for i, data in enumerate(trainloader, 0):
+            # print("Train data...")
 
-                # get the inputs; data is a list of [inputs, labels]
-                inputs, labels = data[0].to(device), data[1].to(device)
+            # get the inputs; data is a list of [inputs, labels]
+            inputs, labels = data[0].to(device), data[1].to(device)
 
-                # zero the parameter gradients
-                optimizer.zero_grad()
+            # zero the parameter gradients
+            optimizer.zero_grad()
+            # forward + backward + optimize
+            outputs = net(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
 
-                # forward + backward + optimize
-                outputs = net(inputs)
-                loss = criterion(outputs, labels)
-                loss.backward()
-                optimizer.step()
-
-                # print statistics
-                running_loss += loss.item()
-                if i % 2000 == 1999:  # print every 2000 mini-batches
-                    end_time = time.time()
-                    print('[%d, %5d] loss: %.3f training_time: %.6f s' %
-                          (epoch + 1, i + 1, running_loss / 2000, end_time - start_time))
-                    running_loss = 0.0
-                    w.add_scalar('loss', running_loss, epoch)
-                    start_time = end_time
-                    show_kernel(net)
+            # print statistics
+            running_loss += loss.item()
+            if i % 2000 == 1999:  # print every 2000 mini-batches
+                end_time = time.time()
+                print('[%d, %5d] loss: %.3f training_time: %.6f s' %
+                      (epoch + 1, i + 1, running_loss / 2000, end_time - start_time))
+                running_loss = 0.0
+                w.add_scalar('loss', running_loss, epoch)
+                start_time = end_time
+                show_kernel(net)
 
     print('Finished Training')
     PATH = './cifar_net.pth'
