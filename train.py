@@ -27,77 +27,86 @@ def imshow(img):
     plt.show()
 
 
-ssl._create_default_https_context = ssl._create_unverified_context
+def main():
+    ssl._create_default_https_context = ssl._create_unverified_context
 
-setup_seed(2021)
+    setup_seed(2021)
 
-transform = transforms.Compose(
-    [transforms.ToTensor(),
-     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    print(torch.cuda.is_available())
+    print(torch.cuda.device_count())
+    print(torch.cuda.get_device_name(0))
+    print(torch.cuda.current_device())
 
-batch_size = 4
+    transform = transforms.Compose(
+        [transforms.ToTensor(),
+         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
-                                        download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
-                                          shuffle=True, num_workers=0)
+    batch_size = 4
 
-classes = ('plane', 'car', 'bird', 'cat',
-           'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+    trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
+                                            download=True, transform=transform)
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
+                                              shuffle=True, num_workers=0)
 
-train_on_gpu = True
-# functions to show an image
-device = torch.device("cuda:0" if train_on_gpu else "cpu")
+    classes = ('plane', 'car', 'bird', 'cat',
+               'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-# get some random training images
-dataiter = iter(trainloader)
-images, labels = dataiter.next()
+    train_on_gpu = True
+    # functions to show an image
+    device = torch.device("cuda:0" if train_on_gpu else "cpu")
 
-# show images
-imshow(torchvision.utils.make_grid(images))
-# print labels
-print(' '.join('%5s' % classes[labels[j]] for j in range(batch_size)))
+    # get some random training images
+    dataiter = iter(trainloader)
+    images, labels = dataiter.next()
 
-net = Net().to(device)
+    # show images
+    imshow(torchvision.utils.make_grid(images))
+    # print labels
+    print(' '.join('%5s' % classes[labels[j]] for j in range(batch_size)))
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    net = Net().to(device)
 
-dummy_input = torch.rand(batch_size, 3, 32, 32).to(device)
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-with SummaryWriter(comment='model') as w:
-    w.add_graph(net, dummy_input)
+    dummy_input = torch.rand(batch_size, 3, 32, 32).to(device)
 
-    start_time = time.time()
+    with SummaryWriter(comment='model') as w:
+        w.add_graph(net, dummy_input)
 
-    for epoch in range(100):  # loop over the dataset multiple times
-        print("start training...")
-        running_loss = 0.0
-        for i, data in enumerate(trainloader, 0):
-            # print("Train data...")
+        start_time = time.time()
 
-            # get the inputs; data is a list of [inputs, labels]
-            inputs, labels = data[0].to(device), data[1].to(device)
+        for epoch in range(100):  # loop over the dataset multiple times
+            print("start training...")
+            running_loss = 0.0
+            for i, data in enumerate(trainloader, 0):
+                # print("Train data...")
 
-            # zero the parameter gradients
-            optimizer.zero_grad()
+                # get the inputs; data is a list of [inputs, labels]
+                inputs, labels = data[0].to(device), data[1].to(device)
 
-            # forward + backward + optimize
-            outputs = net(inputs)
-            loss = criterion(outputs, labels)
-            loss.backward()
-            optimizer.step()
+                # zero the parameter gradients
+                optimizer.zero_grad()
 
-            # print statistics
-            running_loss += loss.item()
-            if i % 2000 == 1999:  # print every 2000 mini-batches
-                end_time = time.time()
-                print('[%d, %5d] loss: %.3f training_time: %.6f s' %
-                      (epoch + 1, i + 1, running_loss / 2000, end_time - start_time))
-                running_loss = 0.0
-                w.add_scalar('loss', running_loss, epoch)
-                start_time = end_time
+                # forward + backward + optimize
+                outputs = net(inputs)
+                loss = criterion(outputs, labels)
+                loss.backward()
+                optimizer.step()
 
-print('Finished Training')
-PATH = './cifar_net.pth'
-torch.save(net.state_dict(), PATH)
+                # print statistics
+                running_loss += loss.item()
+                if i % 2000 == 1999:  # print every 2000 mini-batches
+                    end_time = time.time()
+                    print('[%d, %5d] loss: %.3f training_time: %.6f s' %
+                          (epoch + 1, i + 1, running_loss / 2000, end_time - start_time))
+                    running_loss = 0.0
+                    w.add_scalar('loss', running_loss, epoch)
+                    start_time = end_time
+
+    print('Finished Training')
+    PATH = './cifar_net.pth'
+    torch.save(net.state_dict(), PATH)
+
+if __name__ == "__main__":
+    main()
