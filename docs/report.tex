@@ -98,7 +98,38 @@
 \maketitle
 
 \section{任务介绍}
-CIFAR-10 数据集由60000张图片组成，每张图片的大小为32 $\times$ 32，RGB三通道。整个数据集都被标记为十个标签的一种。数据集在下载后已经被分为5个训练Batch和1个测试Batch。每个Batch都包含10000张图片。\citr{krizhevsky2009learning}
+CIFAR-10 数据集由60000张图片组成，每张图片的大小为32 $\times$ 32，RGB三通道。整个数据集都被标记为十个标签的一种。数据集在下载后已经被分为5个训练Batch和1个测试Batch。每个Batch都包含10000张图片。\cite{krizhevsky2009learning}
+
+\subsection{工作概述}
+此Project进行CIFAR-10数据集的图像分类，需要基于CNN。由于数据集已经进行打包，我们直接使用数据集的训练集-测试集分类方法。需要完成的工作包括数据预处理，设计模型，设计训练策略，实际训练，进行训练总结（以文字和可视化的形式）。模型使用Pytorch工具，基于\url{https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html}. \\
+\indent
+在没有使用额外数据以及预训练模型的前提下，我们设计的模型准确率达到了90\%, 参数大小为83MB.
+
+\subsection {相关工作}
+在\url{https://paperswithcode.com/sota/image-classification-on-cifar-10} 中含有使用此数据集模型排名。主流模型包括Transformer\cite{dosovitskiy2021image}, ResNet\cite{kolesnikov2020big}, EfficientNet\cite{tan2021efficientnetv2}, DCN\cite{sousa2021cnn}, ResNeXt\cite{Li_2019_CVPR}等。\\
+\indent 从2012年有记录以来，年度最佳模型的准确率从88.8\%提高到了99.5\%。发表于2021CVPR的ViT-H/14将准确率提高到了99.5\%\cite{dosovitskiy2021image}，而使用CNN的FlexConv在达到92.2\%以上准确率的同时\cite{romero2021flexconv}，保证了自己的参数大小约为0.67MB，约为准确率最高的模型的$\frac{1}{1000}$.
+
+
+\section{数据处理}
+
+
+
+\section{模型设计}
+ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015deep} 他的提出让CNN的层数由原来的不到十层提高到了上百层甚至上千层。人们发现随着CNN层数的增多，模型准确度反而下降。而这不能用过拟合来解释（因为训练集和测试集的Loss都同步上升），而随着BN大部分解决了梯度消失/爆炸问题后，模型退化问题仍然存在。
+\\ 
+\indent
+ResNet提出了Shortcut方法，引入了恒等映射，让模型拥有了“什么都不做”的选择，有效防止了更多的层数带来的信息丢失。而更多的层数为分层学习提供了可能，每一层学到更细化的特征，提高了模型的表达能力。
+\\ 
+\indent
+因此，我们的模型是基于ResNet的基本框架进行调参的。在ResNet论文\cite{he2015deep}中提出了5种ResNet模型，即ResNet18, ResNet34, ResNet50, ResNet101, ResNet152. 数字代表的是层数，我们复现了以下框架。\cite{resnet1}
+%% 一张
+\begin{figure} %H为当前位置，!htb为忽略美学标准，htbp为浮动图形
+	\centering %图片居中
+	\includegraphics[width=0.7\textwidth]{resnet.png} %插入图片，[]中设置图片大小，{}中是图片文件名
+	\caption{ResNet 论文中给出的模型结构} %最终文档中希望显示的图片标题
+	\label{Fig.resnet1} %用于文内引用的标签
+\end{figure}
+
 
 \section{模板介绍}
 这个模板是UTF-8编码的，使用xeCJK宏包，中英文混排更美观，但编译速度稍慢。注意：该模板只能用xelatex编译。常用逻辑符号命令：
