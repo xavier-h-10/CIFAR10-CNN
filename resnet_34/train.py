@@ -25,6 +25,8 @@ setup_seed(2021)
 
 # 定义是否使用GPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(device)
+print(torch.cuda.get_device_name(0))
 
 # 参数设置,使得我们能够手动输入命令行参数，就是让风格变得和Linux命令行差不多
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
@@ -63,12 +65,12 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 # 模型定义-ResNet
 # net = ResNet18().to(device)
 
-net=ResNet34().to(device)
+net=ResNet18().to(device)
 
 # 定义损失函数和优化方式
 criterion = nn.CrossEntropyLoss()  # 损失函数为交叉熵，多用于多分类问题
 optimizer = optim.SGD(net.parameters(), lr=LR, momentum=0.9, weight_decay=5e-4) #优化方式为mini-batch momentum-SGD，并采用L2正则化（权重衰减）
-
+scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 # optimizer = optim.Adam(net.parameters(), lr=LR, betas=(0.9, 0.99), weight_decay=5e-4)
 
 # 训练
@@ -126,7 +128,7 @@ if __name__ == "__main__":
                     acc = 100. * correct / total
                     # 将每次测试结果实时写入acc.txt文件中
                     print('Saving model......')
-                    torch.save(net.state_dict(), '%s/net_%03d.pth' % (args.outf, epoch + 1))
+                    # torch.save(net.state_dict(), '%s/net_%03d.pth' % (args.outf, epoch + 1))
                     f.write("EPOCH=%03d,Accuracy= %.3f%%" % (epoch + 1, acc))
                     f.write('\n')
                     f.flush()
@@ -136,4 +138,7 @@ if __name__ == "__main__":
                         f3.write("EPOCH=%d,best_acc= %.3f%%" % (epoch + 1, acc))
                         f3.close()
                         best_acc = acc
+
+                scheduler.step()
+
             print("Training Finished, TotalEPOCH=%d" % EPOCH)
