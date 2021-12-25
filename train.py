@@ -6,8 +6,10 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 from tensorboardX import SummaryWriter
-
 from model import Net
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 transform = transforms.Compose(
     [transforms.ToTensor(),
