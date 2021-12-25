@@ -23,3 +23,11 @@ class Net(nn.Module):
         x = self.fc3(x)
         # x = self.softmax(x)
         return x
+
+
+class ResNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        pass
