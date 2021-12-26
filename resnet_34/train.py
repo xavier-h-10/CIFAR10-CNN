@@ -5,7 +5,8 @@ import torchvision
 import torchvision.transforms as transforms
 import argparse
 from resnet import ResNet18
-from resnet_all import ResNet34, ResNet101
+from resnet_all import ResNet34, ResNet50, ResNet101
+from lenet import LeNet
 import numpy as np
 import random
 import ssl
@@ -135,10 +136,11 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False,
 # classes
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-# net = ResNet18().to(device)
-net = ResNet101().to(device)
+# net = ResNet101().to(device)
 
 # net = ResNet50().to(device)
+
+net = LeNet().to(device)
 
 # resnet改为data parallel的模型
 # net = ResNet50()
@@ -241,5 +243,5 @@ if __name__ == "__main__":
     print("Training Finished, TotalEPOCH=%d" % EPOCH)
 
 # 若释放前不需要保存环境
-os.system(
-    "export $(cat /proc/1/environ |tr '\\0' '\\n' | grep MATCLOUD_CANCELTOKEN)&&/public/script/matncli node cancel -url https://matpool.com/api/public/node")
+# os.system(
+#     "export $(cat /proc/1/environ |tr '\\0' '\\n' | grep MATCLOUD_CANCELTOKEN)&&/public/script/matncli node cancel -url https://matpool.com/api/public/node")
