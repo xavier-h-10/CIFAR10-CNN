@@ -168,31 +168,55 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 
 
 
-\subsection {损失函数}
-尽管有人指出\cite{beyer2020imagenet}ResNet损失函数使用Binary Cross Entropy Loss的表现略好于Cross Entropy Loss，但我们并没有把重点放在损失函数的选取上。我们选择了多分类问题最常使用的Cross Entropy Loss函数。
+\subsubsection {损失函数}
+损失函数指明了模型的训练目标。尽管有人指出\cite{beyer2020imagenet}ResNet损失函数使用Binary Cross Entropy Loss的表现略好于Cross Entropy Loss，但我们并没有把重点放在损失函数的选取上。我们选择了多分类问题最常使用的Cross Entropy Loss函数。
 
-\subsection{Epoch}
+\subsubsection{Epoch}
 在模型超参数调试完成之后，我们发现每次Epoch在我们的训练集群上需要20S左右训练。考虑到训练和实验的总规模，我们把Epoch总数定为100和300两个MileStone. 100达到时按要求记录报告准确率，300为最大迭代次数，主要为了挖掘模型的最大准确率。
 
-\subsection{其他模型选择}
+\subsubsection{其他模型选择}
 除了ResNet，我们还调研并且使用典型参数运行了一些在ResNet出现之前的较浅的CNN模型，包括Vgg16，Inception10, Alexnet8. 我们阅读了这些模型的Tensorflow实现并且试着本地运行了他们。
 
-\subsection{训练方法}
-\subsubsection{选择调试超参数}
-尽管我们尽可能提高了算力，但是限于ResNet的高层数， 我们的实验次数受到了限制，只能选择有限的超参数进行调试。使用ResNet18架构，我们选择了以下参数：
+\section{训练方法}
+\subsection{选择调试超参数}
+尽管我们尽可能提高了算力，但是限于ResNet的高层数， 我们的实验次数受到了限制，只能选择有限的超参数进行调试。根据ResNet论文\cite{he2015deep}, 建议Batch Size为128, lr为0.1.基于此，使用ResNet18架构，我们选择了以下参数进行调试：
 \begin{itemize}
-	\item Batch Size: 我们从8开始，依次调整Batch Size为8, 16, 32, 64, 128. 由于显存限制，我们无法进一步提高Batch Size，否则训练速度可能会快速下降。然后，我们选择最好的Batch Size进行下一步调试。
-	\item Learning Rate: 我们从$1 \times 10^{-4}$开始，依次提高Learning Rate为$1 \times 10^{-3}$, $1 \times 10^{-2}$, $1 \times 10^{-1}$, 粗略的观察Learning Rate在哪个数量级表现最好，并且能平衡所需要的Epoch. 我们在这个数量级上进一步调试，直到选择一个比较好的Learning Rate进入下一步调参。
-	\item Learning Rate Decay: 由于学习率没有做精确调参，我们选择了 
-	\item Batch Size: 
+	\item Batch size: 每次翻倍调整Batch size直到计算资源不能支持
+	\item Learning Rate: 从$10 ^ {-4}$跨数量级调试lr
+	\item Learning Rate Decay: 对比pytorch中学习率调整方法
+	\item Optimizer: 阅读论文筛选出了两个优化器进行比较, 同时调整优化器参数，包括weight decay 和momentum.
 \end{itemize}
 
-\subsubsection{优化器}
-常见的优化器包括SGD, Adam, LAMB. 大部分的卷积神经网络都采用了SGD作为优化器，也有人采用Adam作为优化器，近几年的ResNet论文也有建议采用LAMB的。上述的Benchmark Top 1\cite{dosovitskiy2021image}论文中指出了在ResNet50模型中，各个优化器的表现是几乎没有任何差别的。根据一个DL科学家的回答\cite{QuoraAnswer}，使用SGD With momentum 因此，我们简单的采用阅读论文时的观察和建议，选择了SGD With momentum.
+\subsection{Batch size}
+我们从8开始，依次调整Batch Size为8, 16, 32, 64, 128, 256. 其中，Batch Size为256时，根据论文\cite{he2015deep} 建议，我们将learning rate 设置为了默认值的$110\%$. 由于显存限制，我们无法进一步提高Batch Size，否则训练速度可能会快速下降。实验完成后，我们选择最好的Batch Size进行下一步调试。
+
+\subsection{Learning rate}
+我们从$1 \times 10^{-4}$开始，依次提高Learning Rate为$1 \times 10^{-3}$, $1 \times 10^{-2}$, $1 \times 10^{-1}$, 观察Learning Rate在哪个数量级表现最好，并且能平衡模型收敛所需要的Epoch. 我们在这个数量级上进一步调试，直到选择一个比较好的Learning Rate进入下一步调参。
+
+\subsection{Learning rate decay}
+pytorch中主要支持6种学习率调整方法。一般而言，训练初期给予较大的学习率，随着训练进行，学习率逐渐减小能较好的平衡训练速度和准确率。在我们阅读的论文中，常使用的decay方法为StepLR(等间隔调整学习率，调整倍数为Gamma倍，调整间隔为step\_size epochs) 和 CosineAnnealingLR(以余弦函数为周期，在每个周期最大值时重新设置学习率). 在一篇基于ResNet讨论Warm restart的论文中\cite{loshchilov2017sgdr}，作者建议使用后者进行学习率调整并且基于CIFAR10数据集做了实验。我们采用了他的实验结果，使用CosineAnnealingLR, warmup epochs 设为5.
+
+\subsection{Optimizer and weight decay}
+常见的优化器包括SGD, Adam, LAMB. 大部分的卷积神经网络都采用了SGD作为优化器，也有人采用Adam作为优化器，近几年的ResNet论文也有建议采用LAMB的。上述的Benchmark Top 1\cite{dosovitskiy2021image}论文中指出了在ResNet50模型中，各个优化器的表现是几乎没有差别的。\\
+\indent
+根据一个DL科学家的回答\cite{QuoraAnswer}，使用SGD with momentum 更擅长于寻找"high-qualiyty and flat"的局部最小值，而Adam则更容易找到"sharp"的局部最小值。而前者带来了更好的泛化性和更低的性能损失，而且能够在其他超参数没有调试好的前提下带来还不错的结果。\\
+\indent
+我们同时尝试了SGD with momentum和 Adam, 其中前者的momentum 和weight\_decay 都采用了SGD优化器中的默认值，也即$momentum = 0.9, weight decay = 5 \times 10 ^ {-4}$；而Adam优化器的参数采纳了官方文档的推荐值，也即$lr = 1 \times 10^{-3}, \space betas=(0.9, 0.999), \space eps = 10 ^ {-8}, \space weight\_decay = 0$. (betas 为一阶和二阶的指数衰减率)我们对比了他们的效果，选择了相对更优秀的进行训练。
 
 \section{实验与结果}
 \subsection{平台}
 使用了矩池云平台进行训练，租用了至多4块RTX3080 Ti显卡，CPU为8 $\times$ Xeon E5-2682 v4核心，86G内存。系统环境为Python3.7，CUDA 11.1，cuDNN 8.0.5，Pytorch 1.8.1， Horovod 0.22.1，Ubuntu 18.04.
+
+\subsection{示例代码}
+使用示例代码运行100 Epochs查看结果作为Baseline.
+
+\subsection{超参数调试结果}
+\subsubsection{Batch size}
+\subsubsection{Learning rate}
+\subsubsection{优化器}
+
+\subsection{实验结果}
+根据超参数调试结果，我们将基于准确率，训练时间，参数大小报告我们的实验结果。
 
 
 
