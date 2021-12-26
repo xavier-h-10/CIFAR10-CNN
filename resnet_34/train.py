@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 from torch.utils.tensorboard import SummaryWriter
 
 ssl._create_default_https_context = ssl._create_unverified_context
+mean = [0.4914, 0.4822, 0.4465]
+std = [0.2023, 0.1994, 0.2010]
 
 
 def setup_seed(seed):
@@ -39,19 +41,26 @@ def show_kernel(model, writer):
 
 
 def imshow(img):
-    # img = img / 2 + 0.5  # unnormalize
     npimg = img.numpy()
     plt.imshow(np.transpose(npimg, (1, 2, 0)))
     plt.show()
 
 
+def denormalize(img):
+    means = torch.tensor(mean).reshape(1, 3, 1, 1)
+    stds = torch.tensor(std).reshape(1, 3, 1, 1)
+    return img * stds + means  # unnormalize
+
+
 def show_some_data(dataset, num=1):
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=5, shuffle=False,
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=False,
                                              num_workers=0)
     cnt = 0
     for inputs, labels in dataloader:
         if cnt >= num:
             return
+        for i in range(inputs.shape[0]):
+            inputs[i] = denormalize(inputs[i])
         imshow(torchvision.utils.make_grid(inputs))
         cnt += 1
 
@@ -65,7 +74,6 @@ print(torch.cuda.get_device_name(0))
 if torch.cuda.device_count() > 1:
     print(torch.cuda.get_device_name(1))
 
-# 参数设置,使得我们能够手动输入命令行参数，就是让风格变得和Linux命令行差不多
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--outf', default='./model/', help='folder to output images and model checkpoints')  # 输出结果保存路径
 parser.add_argument('--net', default='./model/Resnet18.pth', help="path to net (to continue training)")  # 恢复训练时的模型路径
@@ -76,34 +84,33 @@ EPOCH = 135  # 遍历数据集次数
 pre_epoch = 0  # 定义已经遍历数据集的次数
 BATCH_SIZE = 128  # 批处理尺寸(batch_size)
 LR = 8e-3  # 学习率
-mean = [0.4914, 0.4822, 0.4465]
-std = [0.2023, 0.1994, 0.2010]
 
-# 准备数据集并预处理
+# preprocess
+transform_train_org = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize(mean=mean, std=std),
+])
+
 transform_train_amplified1 = transforms.Compose([
     transforms.RandomCrop(32, padding=4),  # 先四周填充0，再把图像随机裁剪成32*32
     transforms.RandomHorizontalFlip(),  # 图像一半的概率翻转，一半的概率不翻转
     # transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
     transforms.RandomAffine(degrees=5),
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
+    transforms.Normalize(mean=mean, std=std),  # R,G,B每层的归一化用到的均值和方差
 ])
 
-# transform_train_amplified2 = transforms.Compose([
-#     transforms.RandomAffine(degrees=20),
-#     transforms.ToTensor(),
-#     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
-# ])
-#
-# transform_train_amplified3 = transforms.Compose([
-#     transforms.ColorJitter(brightness=0.2, saturation=0.1),
-#     transforms.ToTensor(),
-#     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),  # R,G,B每层的归一化用到的均值和方差
-# ])
+transform_train_amplified2 = transforms.Compose([
+    transforms.RandomAffine(degrees=20),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=mean, std=std),  # R,G,B每层的归一化用到的均值和方差
+])
 
-# amplified_trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
-#                                                   transform=transform_train_amplified3)
-# show_some_data(amplified_trainset)
+transform_train_amplified3 = transforms.Compose([
+    transforms.ColorJitter(brightness=0.2, saturation=0.1),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=mean, std=std),  # R,G,B每层的归一化用到的均值和方差
+])
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
@@ -114,13 +121,22 @@ transform_test = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(mean=mean, std=std),
 ])
+
+trainset_org = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train_org)
+# Calculate the amplified dataset
 trainset_amplied1 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
                                                  transform=transform_train_amplified1)
+trainset_amplied2 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
+                                                 transform=transform_train_amplified2)
+trainset_amplied3 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
+                                                 transform=transform_train_amplified3)
+
+# Show some results of data augmentation
+show_some_data(trainset_org)
 show_some_data(trainset_amplied1)
-# trainset_amplied2 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
-#                                                  transform=transform_train_amplified2)
-# trainset_amplied3 = torchvision.datasets.CIFAR10(root='./data', train=True, download=True,
-#                                                  transform=transform_train_amplified3)
+show_some_data(trainset_amplied2)
+show_some_data(trainset_amplied3)
+
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)  # 训练数据集
 
 trainset = trainset.__add__(trainset_amplied1)
