@@ -2,7 +2,7 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 
-from model import Net
+from official_example.model import Net
 
 batch_size = 4
 transform = transforms.Compose(
@@ -17,7 +17,7 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
 dataiter = iter(testloader)
 images, labels = dataiter.next()
 
-PATH = './cifar_net.pth'
+PATH = 'cifar_net.pth'
 net = Net()
 net.load_state_dict(torch.load(PATH))
 

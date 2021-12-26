@@ -6,7 +6,7 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 from tensorboardX import SummaryWriter
-from model import Net
+from official_example.model import Net
 import ssl
 import random
 import time
@@ -121,7 +121,7 @@ def main():
                     show_kernel(net, w)
 
     print('Finished Training')
-    PATH = './cifar_net.pth'
+    PATH = 'cifar_net.pth'
     torch.save(net.state_dict(), PATH)
 
 
