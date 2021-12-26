@@ -46,13 +46,15 @@ def main():
 
     setup_seed(2021)
 
+    epochs = 100
+
     transform = transforms.Compose(
         [transforms.ToTensor(),
          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
     batch_size = 16
 
-    trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
+    trainset = torchvision.datasets.CIFAR10(root='./resnet_34/data', train=True,
                                             download=True, transform=transform)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
                                               shuffle=True, num_workers=0, pin_memory=True)
@@ -90,7 +92,7 @@ def main():
 
         start_time = time.time()
 
-        for epoch in range(10):  # loop over the dataset multiple times
+        for epoch in range(epochs):  # loop over the dataset multiple times
             print("start training...")
             running_loss = 0.0
             for i, data in enumerate(trainloader, 0):
