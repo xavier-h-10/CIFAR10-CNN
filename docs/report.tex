@@ -237,8 +237,55 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 
 \subsection{超参数调试结果}
 \subsubsection{Batch size}
+我们以ResNet18为基准，按照8，32，64，128的顺序不断调整batch size进行测试，得到图\ref{fig:resnet18_batchsize}所示的结果。
+\begin{figure}[H]
+	\centering
+	\subfigure[训练集损失曲线]{
+		\centering
+		\includegraphics[width=0.45\linewidth]{train_loss_batchsize}
+	}
+	\subfigure[测试集准确率]{
+		\centering
+		\includegraphics[width=0.45\linewidth]{test_acc_batchsize}
+	}
+	\caption{ResNet18在不同batchsize下的表现。}
+	\label{fig:resnet18_batchsize}
+\end{figure}
+当batch size为128时，无论是训练集损失还是测试集准确率的变化都比较平稳。在训练速度较快的同时，也能更好地利用GPU资源。受限于硬件资源，我们没有尝试更大的batch size。
 \subsubsection{Learning rate}
+基于上述结果，我们继续使用以128为batch size的ResNet18。依次以$8\times10^{-1}$，$8\times10^{-2}$，$8\times10^{-4}$进行训练，最终得到图\ref{fig:resnet18_lr}所示的结果。
+\begin{figure}[H]
+	\centering
+	\subfigure[训练集损失曲线]{
+		\centering
+		\includegraphics[width=0.45\linewidth]{train_loss_lr}
+	}
+	\subfigure[测试集准确率]{
+		\centering
+		\includegraphics[width=0.45\linewidth]{test_acc_lr}
+	}
+	\caption{ResNet18在不同learning rate下的表现}
+	\label{fig:resnet18_lr}
+\end{figure}
+结果表明过大的学习率可能导致准确率震荡的现象，而较小的学习率也可能会导致最终结果不够精确。对于ResNet18而言，$8\times10^{-2}$是较为合适的学习率——训练速度较快且训练过程波动小，较为稳定。
 \subsubsection{优化器}
+
+\subsubsection{预处理}
+前文提到了我们使用的预处理方法。我们针对未扩充的原始数据集和扩充过的数据集进行了对照试验。图\ref{fig:resnet18_amp}展示了这一实验结果。
+\begin{figure}[H]
+	\centering
+	\subfigure[训练集损失曲线]{
+		\centering
+		\includegraphics[width=0.45\linewidth]{train_loss_amp}
+	}
+	\subfigure[测试集准确率]{
+		\centering
+		\includegraphics[width=0.45\linewidth]{test_acc_amp}
+	}
+	\caption{ResNet18使用原始数据集和扩充数据集的训练结果}
+	\label{fig:resnet18_amp}
+\end{figure}
+扩充过的数据集的规模是原始数据集的四倍（包含原始数据集加上三个经过数据强化过的副本）。通过数据增强，我们获得了更多的数据样本。实验结果说明，这些数据样本提升了模型的准确率。随机翻转、随机仿射变换和颜色抖动等噪音使得模型学习到了更多特殊情况，增强了模型的泛化能力和鲁棒性。与此同时，虽然样本数增多，但是ResNet自身的BN层等设计降低了过拟合发生的概率，最终得到了很高的测试集准确率。为了对比，我们还训练了ResNet101，不难发现两者的最终结果相差的不多。通过预处理我们的模型预测能力获得了惊人的提升。
 
 \subsection{实验结果}
 根据超参数调试结果，我们将基于准确率，训练时间，参数大小报告我们的实验结果。
@@ -273,9 +320,25 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 	\end{tabular}
 \end{table}
 
+
+
 \subsection{训练过程回顾}
 
-\subsubsection{Tensorboard 数据}
+\subsubsection{训练数据}
+所有模型的训练集误差均以较快的速度下降并在最终趋于平稳，但是准确率因模型的参数选定和结构而异。我们针对不同的参数进行了较多的测试，并将测试数据和LeNet进行比较，如图\ref{fig:total}所示，多数的模型都好过LeNet。ResNet使得CNN网络可以非常深，以提取更深层次的特征，提升了准确率。但是一些未选定合适超参数的模型的表现可能还不如LeNet。这说明了选择合适参数的重要性。在深度学习领域，模型和参数是配套的，缺一不可。
+\begin{figure}[H]
+	\centering
+	\subfigure[训练集损失曲线]{
+		\centering
+		\includegraphics[width=0.46\linewidth]{total_train_loss}
+	}
+	\subfigure[测试集准确率]{
+		\centering
+		\includegraphics[width=0.46\linewidth]{total_test_acc}
+	}
+	\caption{实验测试结果汇总}
+	\label{fig:total}
+\end{figure}
 
 \subsubsection{图示训练过程}
 
