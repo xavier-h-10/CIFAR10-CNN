@@ -280,15 +280,16 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 \subsubsection{图示训练过程}
 
 \section{Appendix A}
-在选择方向的过程中，我们回顾了自从CNN提出以来的各种变体以及其成绩，并且获取了一些Tensorflow实现并且运行。您可以在./others里面查看这些模型并且复现结果。由于数据对显存要求远大于对显卡性能要求，我们没有保持硬件环境的一致。
+在选择方向的过程中，我们回顾了自从CNN提出以来的各种变体以及其成绩，并且获取了一些Tensorflow实现并且运行。您可以在./others里面查看这些模型并且复现结果。由于在部分模型中，数据对显存要求大于对显卡性能要求，我们没有保持硬件环境的一致，以求在花费尽可能低的情况下查看他们的效果。
 \begin{table}[h]
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
-		Arch name   & Hardware      & Param size & Epochs & Batch size & Running time & Accuracy \\ \hline
-		VGG16       & Nvidia 2080Ti & 183.10 MB  & 100    & 32         & 61 mins      & 76.20\%  \\ \hline
-		alexnet8    & Nvidia T80    & 115.67 MB  & 100    & 32         & 145 mins     & 61.62\%  \\ \hline
-		resnet18-tf & Nvidia 2080Ti & 134.16 MB  & 100    & 32         & 59 mins     & 61.50\%    \\ \hline
-		inception10 & Nvidia 2080Ti & 1.51 MB    & 100    & 32         &              &  73.66\%    \\ \hline
+		Arch name   & Hardware            & Param size & Epochs & Batch size & Running time & Accuracy \\ \hline
+		VGG16       & Nvidia 2080Ti       & 183.10 MB  & 100    & 32         & 61 mins      & 76.20\%  \\ \hline
+		alexnet8    & Nvidia Tesla T80    & 115.67 MB  & 100    & 32         & 145 mins     & 61.62\%  \\ \hline
+		resnet18-tf & Nvidia Tesla T4     & 134.16 MB  & 100    & 32         & 120 mins     & 73.07\%    \\ \hline
+		inception10 & Nvidia 2080Ti       & 1.51 MB    & 100    & 32         & 59 mins      &  61.50\%    \\ \hline
+		lenet5 		& Nvidia Tesla T4     & 未记录      & 100    & 32         & 15 mins      &  56.87\%    \\ \hline
 	\end{tabular}
 \end{table}
 \\
@@ -310,9 +311,13 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 	}
 	\subfigure[ResNet18]{
 		\centering
-		\includegraphics[width=0.4\linewidth]{augment3}
+		\includegraphics[width=0.4\linewidth]{resnet18-tf}
 	}
-	\caption{四种架构的朴素实现的实验结果}
+	\subfigure[lenet5]{
+	\centering
+	\includegraphics[width=0.4\linewidth]{lenet5}
+}
+	\caption{五种架构的朴素实现的实验结果}
 \end{figure}
 
 \section{模板介绍}

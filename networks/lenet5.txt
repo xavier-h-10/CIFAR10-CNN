@@ -1,0 +1,267 @@
+ssh://root@hz.matpool.com:28492/root/miniconda3/envs/myconda/bin/python -u /mnt/lee/cifar10_lenet5.py
+2021-12-26 09:07:46.343878: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-12-26 09:07:51.517030: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-12-26 09:07:51.518322: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2021-12-26 09:07:51.563833: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+pciBusID: 0000:b1:00.0 name: Tesla T4 computeCapability: 7.5
+coreClock: 1.59GHz coreCount: 40 deviceMemorySize: 14.75GiB deviceMemoryBandwidth: 298.08GiB/s
+2021-12-26 09:07:51.563881: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-12-26 09:07:51.567294: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2021-12-26 09:07:51.567383: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.11
+2021-12-26 09:07:51.568693: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2021-12-26 09:07:51.569059: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2021-12-26 09:07:51.572388: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2021-12-26 09:07:51.572893: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.11
+2021-12-26 09:07:51.573061: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2021-12-26 09:07:51.575753: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+2021-12-26 09:07:51.576095: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX512F
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-12-26 09:07:51.577825: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-12-26 09:07:51.580705: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+pciBusID: 0000:b1:00.0 name: Tesla T4 computeCapability: 7.5
+coreClock: 1.59GHz coreCount: 40 deviceMemorySize: 14.75GiB deviceMemoryBandwidth: 298.08GiB/s
+2021-12-26 09:07:51.580776: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-12-26 09:07:51.580828: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2021-12-26 09:07:51.580863: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.11
+2021-12-26 09:07:51.580896: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2021-12-26 09:07:51.580928: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2021-12-26 09:07:51.580964: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2021-12-26 09:07:51.580998: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.11
+2021-12-26 09:07:51.581032: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2021-12-26 09:07:51.586179: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+2021-12-26 09:07:51.586282: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-12-26 09:07:52.449938: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1261] Device interconnect StreamExecutor with strength 1 edge matrix:
+2021-12-26 09:07:52.449986: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1267]      0 
+2021-12-26 09:07:52.450042: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1280] 0:   N 
+2021-12-26 09:07:52.453911: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1406] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 9301 MB memory) -> physical GPU (device: 0, name: Tesla T4, pci bus id: 0000:b1:00.0, compute capability: 7.5)
+2021-12-26 09:07:52.834410: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:116] None of the MLIR optimization passes are enabled (registered 2)
+2021-12-26 09:07:52.863368: I tensorflow/core/platform/profile_utils/cpu_utils.cc:112] CPU Frequency: 2600000000 Hz
+Epoch 1/100
+2021-12-26 09:07:53.354355: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2021-12-26 09:07:53.997361: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.11
+2021-12-26 09:07:54.002804: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+1563/1563 [==============================] - 16s 8ms/step - loss: 2.1834 - sparse_categorical_accuracy: 0.1720 - val_loss: 1.8547 - val_sparse_categorical_accuracy: 0.3201
+Epoch 2/100
+1563/1563 [==============================] - 11s 7ms/step - loss: 1.8047 - sparse_categorical_accuracy: 0.3374 - val_loss: 1.6763 - val_sparse_categorical_accuracy: 0.3985
+Epoch 3/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 1.6747 - sparse_categorical_accuracy: 0.3930 - val_loss: 1.5931 - val_sparse_categorical_accuracy: 0.4288
+Epoch 4/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.6071 - sparse_categorical_accuracy: 0.4142 - val_loss: 1.5563 - val_sparse_categorical_accuracy: 0.4433
+Epoch 5/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.5443 - sparse_categorical_accuracy: 0.4399 - val_loss: 1.5018 - val_sparse_categorical_accuracy: 0.4604
+Epoch 6/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.4958 - sparse_categorical_accuracy: 0.4621 - val_loss: 1.4736 - val_sparse_categorical_accuracy: 0.4684
+Epoch 7/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.4581 - sparse_categorical_accuracy: 0.4732 - val_loss: 1.4376 - val_sparse_categorical_accuracy: 0.4819
+Epoch 8/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.4188 - sparse_categorical_accuracy: 0.4890 - val_loss: 1.4265 - val_sparse_categorical_accuracy: 0.4869
+Epoch 9/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.4011 - sparse_categorical_accuracy: 0.4976 - val_loss: 1.3963 - val_sparse_categorical_accuracy: 0.5004
+Epoch 10/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.3660 - sparse_categorical_accuracy: 0.5094 - val_loss: 1.4012 - val_sparse_categorical_accuracy: 0.4928
+Epoch 11/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.3391 - sparse_categorical_accuracy: 0.5189 - val_loss: 1.3647 - val_sparse_categorical_accuracy: 0.5070
+Epoch 12/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.3258 - sparse_categorical_accuracy: 0.5254 - val_loss: 1.3339 - val_sparse_categorical_accuracy: 0.5184
+Epoch 13/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 1.2965 - sparse_categorical_accuracy: 0.5379 - val_loss: 1.3410 - val_sparse_categorical_accuracy: 0.5206
+Epoch 14/100
+1563/1563 [==============================] - 11s 7ms/step - loss: 1.2827 - sparse_categorical_accuracy: 0.5422 - val_loss: 1.3179 - val_sparse_categorical_accuracy: 0.5241
+Epoch 15/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.2759 - sparse_categorical_accuracy: 0.5419 - val_loss: 1.3002 - val_sparse_categorical_accuracy: 0.5326
+Epoch 16/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.2571 - sparse_categorical_accuracy: 0.5492 - val_loss: 1.2857 - val_sparse_categorical_accuracy: 0.5422
+Epoch 17/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.2298 - sparse_categorical_accuracy: 0.5594 - val_loss: 1.2791 - val_sparse_categorical_accuracy: 0.5437
+Epoch 18/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.2112 - sparse_categorical_accuracy: 0.5654 - val_loss: 1.2939 - val_sparse_categorical_accuracy: 0.5356
+Epoch 19/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.2117 - sparse_categorical_accuracy: 0.5651 - val_loss: 1.3191 - val_sparse_categorical_accuracy: 0.5317
+Epoch 20/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.1827 - sparse_categorical_accuracy: 0.5747 - val_loss: 1.2783 - val_sparse_categorical_accuracy: 0.5398
+Epoch 21/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 1.1721 - sparse_categorical_accuracy: 0.5796 - val_loss: 1.3156 - val_sparse_categorical_accuracy: 0.5322
+Epoch 22/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 1.1721 - sparse_categorical_accuracy: 0.5810 - val_loss: 1.2822 - val_sparse_categorical_accuracy: 0.5412
+Epoch 23/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.1521 - sparse_categorical_accuracy: 0.5834 - val_loss: 1.2446 - val_sparse_categorical_accuracy: 0.5491
+Epoch 24/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.1477 - sparse_categorical_accuracy: 0.5878 - val_loss: 1.2632 - val_sparse_categorical_accuracy: 0.5514
+Epoch 25/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.1220 - sparse_categorical_accuracy: 0.6012 - val_loss: 1.2624 - val_sparse_categorical_accuracy: 0.5485
+Epoch 26/100
+1563/1563 [==============================] - 12s 7ms/step - loss: 1.1202 - sparse_categorical_accuracy: 0.5976 - val_loss: 1.2487 - val_sparse_categorical_accuracy: 0.5558
+Epoch 27/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.1128 - sparse_categorical_accuracy: 0.6050 - val_loss: 1.2620 - val_sparse_categorical_accuracy: 0.5551
+Epoch 28/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.0923 - sparse_categorical_accuracy: 0.6071 - val_loss: 1.2425 - val_sparse_categorical_accuracy: 0.5537
+Epoch 29/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.0813 - sparse_categorical_accuracy: 0.6118 - val_loss: 1.2726 - val_sparse_categorical_accuracy: 0.5479
+Epoch 30/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.0701 - sparse_categorical_accuracy: 0.6149 - val_loss: 1.2483 - val_sparse_categorical_accuracy: 0.5587
+Epoch 31/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.0586 - sparse_categorical_accuracy: 0.6220 - val_loss: 1.2586 - val_sparse_categorical_accuracy: 0.5569
+Epoch 32/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.0494 - sparse_categorical_accuracy: 0.6249 - val_loss: 1.2409 - val_sparse_categorical_accuracy: 0.5604
+Epoch 33/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.0466 - sparse_categorical_accuracy: 0.6263 - val_loss: 1.2757 - val_sparse_categorical_accuracy: 0.5490
+Epoch 34/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.0274 - sparse_categorical_accuracy: 0.6343 - val_loss: 1.2586 - val_sparse_categorical_accuracy: 0.5597
+Epoch 35/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.0110 - sparse_categorical_accuracy: 0.6390 - val_loss: 1.2507 - val_sparse_categorical_accuracy: 0.5633
+Epoch 36/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.0138 - sparse_categorical_accuracy: 0.6398 - val_loss: 1.2746 - val_sparse_categorical_accuracy: 0.5561
+Epoch 37/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 1.0046 - sparse_categorical_accuracy: 0.6424 - val_loss: 1.2593 - val_sparse_categorical_accuracy: 0.5581
+Epoch 38/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.9891 - sparse_categorical_accuracy: 0.6515 - val_loss: 1.2742 - val_sparse_categorical_accuracy: 0.5549
+Epoch 39/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.9919 - sparse_categorical_accuracy: 0.6454 - val_loss: 1.2802 - val_sparse_categorical_accuracy: 0.5586
+Epoch 40/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.9667 - sparse_categorical_accuracy: 0.6553 - val_loss: 1.2498 - val_sparse_categorical_accuracy: 0.5638
+Epoch 41/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.9556 - sparse_categorical_accuracy: 0.6627 - val_loss: 1.2690 - val_sparse_categorical_accuracy: 0.5570
+Epoch 42/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.9544 - sparse_categorical_accuracy: 0.6603 - val_loss: 1.2770 - val_sparse_categorical_accuracy: 0.5579
+Epoch 43/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.9459 - sparse_categorical_accuracy: 0.6662 - val_loss: 1.2784 - val_sparse_categorical_accuracy: 0.5575
+Epoch 44/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.9314 - sparse_categorical_accuracy: 0.6688 - val_loss: 1.2751 - val_sparse_categorical_accuracy: 0.5628
+Epoch 45/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.9205 - sparse_categorical_accuracy: 0.6722 - val_loss: 1.2817 - val_sparse_categorical_accuracy: 0.5624
+Epoch 46/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.9165 - sparse_categorical_accuracy: 0.6714 - val_loss: 1.2796 - val_sparse_categorical_accuracy: 0.5621
+Epoch 47/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.9064 - sparse_categorical_accuracy: 0.6797 - val_loss: 1.3078 - val_sparse_categorical_accuracy: 0.5557
+Epoch 48/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.9031 - sparse_categorical_accuracy: 0.6792 - val_loss: 1.2798 - val_sparse_categorical_accuracy: 0.5654
+Epoch 49/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.8903 - sparse_categorical_accuracy: 0.6823 - val_loss: 1.3076 - val_sparse_categorical_accuracy: 0.5634
+Epoch 50/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.8730 - sparse_categorical_accuracy: 0.6874 - val_loss: 1.3186 - val_sparse_categorical_accuracy: 0.5571
+Epoch 51/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.8711 - sparse_categorical_accuracy: 0.6887 - val_loss: 1.3050 - val_sparse_categorical_accuracy: 0.5625
+Epoch 52/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.8652 - sparse_categorical_accuracy: 0.6932 - val_loss: 1.2932 - val_sparse_categorical_accuracy: 0.5687
+Epoch 53/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.8617 - sparse_categorical_accuracy: 0.6952 - val_loss: 1.3310 - val_sparse_categorical_accuracy: 0.5591
+Epoch 54/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.8462 - sparse_categorical_accuracy: 0.7010 - val_loss: 1.3514 - val_sparse_categorical_accuracy: 0.5512
+Epoch 55/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.8359 - sparse_categorical_accuracy: 0.7062 - val_loss: 1.3303 - val_sparse_categorical_accuracy: 0.5603
+Epoch 56/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.8253 - sparse_categorical_accuracy: 0.7068 - val_loss: 1.3322 - val_sparse_categorical_accuracy: 0.5600
+Epoch 57/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.8189 - sparse_categorical_accuracy: 0.7086 - val_loss: 1.3828 - val_sparse_categorical_accuracy: 0.5545
+Epoch 58/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.8031 - sparse_categorical_accuracy: 0.7137 - val_loss: 1.3494 - val_sparse_categorical_accuracy: 0.5600
+Epoch 59/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.7975 - sparse_categorical_accuracy: 0.7176 - val_loss: 1.3661 - val_sparse_categorical_accuracy: 0.5515
+Epoch 60/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.7888 - sparse_categorical_accuracy: 0.7210 - val_loss: 1.3942 - val_sparse_categorical_accuracy: 0.5586
+Epoch 61/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.7814 - sparse_categorical_accuracy: 0.7223 - val_loss: 1.3997 - val_sparse_categorical_accuracy: 0.5492
+Epoch 62/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.7760 - sparse_categorical_accuracy: 0.7248 - val_loss: 1.3830 - val_sparse_categorical_accuracy: 0.5551
+Epoch 63/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.7583 - sparse_categorical_accuracy: 0.7326 - val_loss: 1.3962 - val_sparse_categorical_accuracy: 0.5519
+Epoch 64/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.7509 - sparse_categorical_accuracy: 0.7342 - val_loss: 1.4076 - val_sparse_categorical_accuracy: 0.5556
+Epoch 65/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.7388 - sparse_categorical_accuracy: 0.7391 - val_loss: 1.4137 - val_sparse_categorical_accuracy: 0.5545
+Epoch 66/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.7294 - sparse_categorical_accuracy: 0.7389 - val_loss: 1.4371 - val_sparse_categorical_accuracy: 0.5520
+Epoch 67/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.7292 - sparse_categorical_accuracy: 0.7431 - val_loss: 1.4341 - val_sparse_categorical_accuracy: 0.5522
+Epoch 68/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.7287 - sparse_categorical_accuracy: 0.7413 - val_loss: 1.4504 - val_sparse_categorical_accuracy: 0.5523
+Epoch 69/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.7052 - sparse_categorical_accuracy: 0.7483 - val_loss: 1.4536 - val_sparse_categorical_accuracy: 0.5517
+Epoch 70/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.7179 - sparse_categorical_accuracy: 0.7447 - val_loss: 1.4985 - val_sparse_categorical_accuracy: 0.5469
+Epoch 71/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.7007 - sparse_categorical_accuracy: 0.7528 - val_loss: 1.4657 - val_sparse_categorical_accuracy: 0.5532
+Epoch 72/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.6902 - sparse_categorical_accuracy: 0.7549 - val_loss: 1.4959 - val_sparse_categorical_accuracy: 0.5458
+Epoch 73/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.6803 - sparse_categorical_accuracy: 0.7577 - val_loss: 1.5133 - val_sparse_categorical_accuracy: 0.5527
+Epoch 74/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.6789 - sparse_categorical_accuracy: 0.7571 - val_loss: 1.5374 - val_sparse_categorical_accuracy: 0.5453
+Epoch 75/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.6683 - sparse_categorical_accuracy: 0.7620 - val_loss: 1.5499 - val_sparse_categorical_accuracy: 0.5427
+Epoch 76/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.6531 - sparse_categorical_accuracy: 0.7702 - val_loss: 1.5372 - val_sparse_categorical_accuracy: 0.5446
+Epoch 77/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.6403 - sparse_categorical_accuracy: 0.7750 - val_loss: 1.5551 - val_sparse_categorical_accuracy: 0.5453
+Epoch 78/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.6435 - sparse_categorical_accuracy: 0.7726 - val_loss: 1.5953 - val_sparse_categorical_accuracy: 0.5478
+Epoch 79/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.6333 - sparse_categorical_accuracy: 0.7763 - val_loss: 1.5879 - val_sparse_categorical_accuracy: 0.5468
+Epoch 80/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.6153 - sparse_categorical_accuracy: 0.7824 - val_loss: 1.5863 - val_sparse_categorical_accuracy: 0.5470
+Epoch 81/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.6068 - sparse_categorical_accuracy: 0.7848 - val_loss: 1.6328 - val_sparse_categorical_accuracy: 0.5360
+Epoch 82/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.6043 - sparse_categorical_accuracy: 0.7855 - val_loss: 1.6439 - val_sparse_categorical_accuracy: 0.5415
+Epoch 83/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.5994 - sparse_categorical_accuracy: 0.7886 - val_loss: 1.6297 - val_sparse_categorical_accuracy: 0.5405
+Epoch 84/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.5849 - sparse_categorical_accuracy: 0.7939 - val_loss: 1.6514 - val_sparse_categorical_accuracy: 0.5399
+Epoch 85/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.5830 - sparse_categorical_accuracy: 0.7945 - val_loss: 1.6795 - val_sparse_categorical_accuracy: 0.5389
+Epoch 86/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.5734 - sparse_categorical_accuracy: 0.7995 - val_loss: 1.6948 - val_sparse_categorical_accuracy: 0.5392
+Epoch 87/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.5660 - sparse_categorical_accuracy: 0.8024 - val_loss: 1.7264 - val_sparse_categorical_accuracy: 0.5348
+Epoch 88/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.5530 - sparse_categorical_accuracy: 0.8037 - val_loss: 1.7514 - val_sparse_categorical_accuracy: 0.5326
+Epoch 89/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.5495 - sparse_categorical_accuracy: 0.8059 - val_loss: 1.7504 - val_sparse_categorical_accuracy: 0.5360
+Epoch 90/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.5410 - sparse_categorical_accuracy: 0.8099 - val_loss: 1.7706 - val_sparse_categorical_accuracy: 0.5336
+Epoch 91/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.5407 - sparse_categorical_accuracy: 0.8130 - val_loss: 1.7777 - val_sparse_categorical_accuracy: 0.5350
+Epoch 92/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.5284 - sparse_categorical_accuracy: 0.8150 - val_loss: 1.8126 - val_sparse_categorical_accuracy: 0.5333
+Epoch 93/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.5236 - sparse_categorical_accuracy: 0.8188 - val_loss: 1.8158 - val_sparse_categorical_accuracy: 0.5320
+Epoch 94/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.5160 - sparse_categorical_accuracy: 0.8213 - val_loss: 1.8214 - val_sparse_categorical_accuracy: 0.5293
+Epoch 95/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.5084 - sparse_categorical_accuracy: 0.8221 - val_loss: 1.8575 - val_sparse_categorical_accuracy: 0.5315
+Epoch 96/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.5007 - sparse_categorical_accuracy: 0.8242 - val_loss: 1.8747 - val_sparse_categorical_accuracy: 0.5308
+Epoch 97/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.4911 - sparse_categorical_accuracy: 0.8275 - val_loss: 1.9085 - val_sparse_categorical_accuracy: 0.5267
+Epoch 98/100
+1563/1563 [==============================] - 13s 8ms/step - loss: 0.4897 - sparse_categorical_accuracy: 0.8299 - val_loss: 1.9001 - val_sparse_categorical_accuracy: 0.5297
+Epoch 99/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.4802 - sparse_categorical_accuracy: 0.8323 - val_loss: 1.8949 - val_sparse_categorical_accuracy: 0.5295
+Epoch 100/100
+1563/1563 [==============================] - 12s 8ms/step - loss: 0.4724 - sparse_categorical_accuracy: 0.8350 - val_loss: 1.9484 - val_sparse_categorical_accuracy: 0.5241
+Model: "le_net5"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv2d (Conv2D)              multiple                  456       
+_________________________________________________________________
+max_pooling2d (MaxPooling2D) multiple                  0         
+_________________________________________________________________
+conv2d_1 (Conv2D)            multiple                  2416      
+_________________________________________________________________
+max_pooling2d_1 (MaxPooling2 multiple                  0         
+_________________________________________________________________
+flatten (Flatten)            multiple                  0         
+_________________________________________________________________
+dense (Dense)                multiple                  48120     
+_________________________________________________________________
+dense_1 (Dense)              multiple                  10164     
+_________________________________________________________________
+dense_2 (Dense)              multiple                  850       
+=================================================================
+Total params: 62,006
+Trainable params: 62,006
+Non-trainable params: 0
+_________________________________________________________________
+
+Process finished with exit code 0
