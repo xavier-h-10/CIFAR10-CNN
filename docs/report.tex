@@ -3,6 +3,7 @@
 \usepackage{subfigure}
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage{booktabs}
 %\usepackage{fontspec,xltxtra,xunicode}
 %\usepackage{times}
 
@@ -291,32 +292,38 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 根据超参数调试结果，我们将基于准确率，训练时间，参数大小报告我们的实验结果。
 \subsubsection{最终实验数据}
 \begin{table}[h]
-	\begin{tabular}{|l|l|l|l|l|l|}
-		\hline
-		Arch name & LR       & LR decay & Epochs   & Batch size & Warmup epochs \\ \hline
-		Res18     & 4.20E+07 & cosine   & 1.68E+06 & 1.06E+06   & 5             \\ \hline
+	\centering
+	\caption{模型超参数}
+	\begin{tabular}{l|l|l|l|l|l}
+		\toprule
+		Arch name & LR       & LR decay & Epochs   & Batch size & Warmup epochs \\ \midrule
+		Res18     & 4.20E+07 & cosine   & 1.68E+06 & 1.06E+06   & 5             \\ \midrule
 		Res50     & 8.55E+02 & cosine   & 3.42E+01 & 2.16E+01   & 5              \\ \hline
-		Res101    & 1.17E+03 & cosine   & 2.93E+04 & 4.64E+04   &  5            \\ \hline
+		Res101    & 1.17E+03 & cosine   & 2.93E+04 & 4.64E+04   &  5            \\ \bottomrule
 	\end{tabular}
 \end{table}
 
 \begin{table}[h]
-	\begin{tabular}{|l|l|l|l|l|l|}
-		\hline
-		Arch name & Optimizer& Weight decay & Droupout   & Loss           \\ \hline
-		Res18     & 4.20E+07 &         	    & No 	     & Cross Entropy  \\ \hline
-		Res50     & 8.55E+02 &              & No         & Cross Entropy  \\ \hline
-		Res101    & 1.17E+03 &              & No         & Cross Entropy  \\ \hline
+	\centering
+	\caption{模型优化器和损失函数}
+	\begin{tabular}{l|l|l|l|l}
+		\toprule
+		Arch name & Optimizer& Weight decay & Droupout   & Loss           \\ \midrule
+		Res18     & 4.20E+07 &         	    & No 	     & Cross Entropy  \\ \midrule
+		Res50     & 8.55E+02 &              & No         & Cross Entropy  \\ \midrule
+		Res101    & 1.17E+03 &              & No         & Cross Entropy  \\ \bottomrule
 	\end{tabular}
 \end{table}
 
 \begin{table}[h]
-	\begin{tabular}{|l|l|l|l|l|l|}
-		\hline
-		Arch name & Running time & Hardware     & Param size     & Accuracy 	 \\ \hline
-		Res18     & 4.20E+07     & 4.20E+07     & Cross Entropy  & 1897MB        \\ \hline
+	\centering
+	\caption{模型运行环境和结果}
+	\begin{tabular}{l|l|l|l|l}
+		\toprule
+		Arch name & Running time & Hardware     & Param size     & Accuracy 	 \\ \midrule
+		Res18     & 4.20E+07     & 4.20E+07     & Cross Entropy  & 1897MB        \\ \midrule
 		Res50     & 8.55E+02     & 4.20E+07     & Cross Entropy  & LEVEL 8       \\ \hline
-		Res101    & 1.17E+03     & 4.20E+07      & Cross Entropy &               \\ \hline
+		Res101    & 1.17E+03     & 4.20E+07      & Cross Entropy &               \\ \bottomrule
 	\end{tabular}
 \end{table}
 
