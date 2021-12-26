@@ -1,3 +1,5 @@
+import os
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -26,18 +28,18 @@ def setup_seed(seed):
     torch.backends.cudnn.deterministic = True
 
 
-def show_kernel(model, writer):
-    # 可视化卷积核
-    for name, param in model.named_parameters():
-        torch.no_grad()
-        if 'conv' in name and 'weight' in name:
-            in_channels = param.size()[1]
-            out_channels = param.size()[0]  # 输出通道，表示卷积核的个数
-            k_w, k_h = param.size()[3], param.size()[2]  # 卷积核的尺寸
-            kernel_all = param.view(-1, 1, k_w, k_h)  # 每个通道的卷积核
-            # print(kernel_all)
-            kernel_grid = torchvision.utils.make_grid(kernel_all)
-            writer.add_image(f'{name}_all', kernel_grid, global_step=0)
+# def show_kernel(model, writer):
+#     # 可视化卷积核
+#     for name, param in model.named_parameters():
+#         torch.no_grad()
+#         if 'conv' in name and 'weight' in name:
+#             in_channels = param.size()[1]
+#             out_channels = param.size()[0]  # 输出通道，表示卷积核的个数
+#             k_w, k_h = param.size()[3], param.size()[2]  # 卷积核的尺寸
+#             kernel_all = param.view(-1, 1, k_w, k_h)  # 每个通道的卷积核
+#             # print(kernel_all)
+#             kernel_grid = torchvision.utils.make_grid(kernel_all)
+#             writer.add_image(f'{name}_all', kernel_grid, global_step=0)
 
 
 def imshow(img):
@@ -154,8 +156,8 @@ trainset_amplied3 = torchvision.datasets.CIFAR10(root='./data', train=True, down
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)  # 训练数据集
 
 trainset = trainset.__add__(trainset_amplied1)
-# trainset = trainset.__add__(trainset_amplied2)
-# trainset = trainset.__add__(trainset_amplied3)
+trainset = trainset.__add__(trainset_amplied2)
+trainset = trainset.__add__(trainset_amplied3)
 
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True,
                                           num_workers=2)  # 生成一个个batch进行批训练，组成batch的时候顺序打乱取
@@ -170,7 +172,7 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 
 # net = ResNet50().to(device)
 
-net = LeNet().to(device)
+net = ResNet18().to(device)
 
 # resnet改为data parallel的模型
 # net = ResNet50()
@@ -192,9 +194,9 @@ if __name__ == "__main__":
 
     with SummaryWriter(comment='model') as w:
         w.add_graph(net, dummy_input)
-        with open("acc_lenet_batch128_testset.txt", "w") as acc_file:
-            with open("log_lenet_batch128.txt", "w") as log_file:
-                with open("acc_lenet_batch128_trainset.txt", "w") as acc_train_file:
+        with open("acc.txt", "w") as acc_file:
+            with open("log.txt", "w") as log_file:
+                with open("train_acc.txt", "w") as acc_train_file:
                     for epoch in range(pre_epoch, EPOCH):
                         print('\nEpoch: %d' % (epoch + 1))
                         net.train()
@@ -240,6 +242,7 @@ if __name__ == "__main__":
                         with torch.no_grad():
                             correct = 0
                             total = 0
+
                             for data in testloader:
                                 net.eval()
                                 images, labels = data
@@ -268,5 +271,5 @@ if __name__ == "__main__":
     print("Training Finished, TotalEPOCH=%d" % EPOCH)
 
 # 若释放前不需要保存环境
-# os.system(
-#     "export $(cat /proc/1/environ |tr '\\0' '\\n' | grep MATCLOUD_CANCELTOKEN)&&/public/script/matncli node cancel -url https://matpool.com/api/public/node")
+os.system(
+    "export $(cat /proc/1/environ |tr '\\0' '\\n' | grep MATCLOUD_CANCELTOKEN)&&/public/script/matncli node cancel -url https://matpool.com/api/public/node")

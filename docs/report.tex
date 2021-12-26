@@ -168,6 +168,7 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 \\
 \indent
 
+<<<<<<< Updated upstream
 \subsubsection{其他模型选择}
 除了ResNet，我们还调研并且使用典型参数运行了一些在ResNet出现之前的较浅的CNN模型，包括vgg16，Inception10, alexnet8. 我们阅读了这些模型的Tensorflow实现并且试着本地运行了他们。您可以在Appendix A中审阅这些结果。我们发现无论Epochs小或者大，这些模型的训练结果都明显不如我们选择的ResNet. 因此，我们没有对这些模型进行进一步的调参和设计。
 
@@ -203,12 +204,24 @@ ResNet论文中提出了两种Residual Function. 分别应用于ResNet34-以及R
 
 \subsection {损失函数}
 损失函数指明了模型的训练目标。尽管有人指出\cite{beyer2020imagenet}ResNet损失函数使用Binary Cross Entropy Loss的表现略好于Cross Entropy Loss，但我们并没有把重点放在损失函数的选取上。我们选择了多分类问题最常使用的Cross Entropy Loss函数。
+=======
+\subsection{优化器}
+常见的优化器包括SGD，Adam，LAMB. 大部分的卷积神经网络都采用了SGD作为优化器，少许采用了Adam作为优化器，近几年的ResNet论文也有建议采用LAMB的。上述的Benchmark Top 1\cite{dosovitskiy2021image}模型指出了在ResNet50模型中，Adam和SGD的表现是几乎没有任何差别的。因此，我们简单的采用阅读论文时的观察和建议，选择了SGD作为优化器。
+
+\subsection {损失函数}
+尽管有人指出\cite{beyer2020imagenet}ResNet损失函数使用Binary Cross Entropy Loss的表现略好于Cross Entropy Loss，但我们并 没有把重点放在损失函数的选取上。我们选择了多分类问题最常使用的Cross Entropy Loss函数。
+>>>>>>> Stashed changes
 
 \subsection{Epoch}
 在模型超参数调试完成之后，我们发现每次Epoch在我们的训练集群上需要20S左右训练。考虑到训练和实验的总规模，我们把Epoch总数定为100和300两个MileStone. 100 Epochs达到时按要求记录报告准确率，200为最大迭代次数，时为了挖掘模型的最大准确率。我们阅读的论文有许多模型都会运行多达600个或者更多Epochs，限于算力，我们只运行200个并且保存测试集上工作的最好的参数报告。
 
+<<<<<<< Updated upstream
 \subsection{Batch size}
 我们从8开始，依次调整Batch Size为8, 16, 32, 64, 128, 256. 其中，Batch Size为256时，根据论文\cite{he2015deep} 建议，我们将learning rate 设置为了默认值的$110\%$. 由于显存限制，我们无法进一步提高Batch Size，否则训练速度可能会快速下降。实验完成后，我们选择最好的Batch Size进行下一步调试。
+=======
+\subsection{其他模型选择}
+除了ResNet，我们还调研并且使用典型参数运行了一些在ResNet出现之前的较浅的CNN模型，包括Vgg16，Inception10，Alexnet8. 我们阅读了这些模型的Tensorflow实现并且试着本地运行了他们，还尝试使用Pytorch重写了一遍。我们将结果呈现如下：（结果为Tensorflow版本，因为本地资源只配置了Tensorflow的CUDA）
+>>>>>>> Stashed changes
 
 \subsection{Learning rate}
 我们从$1 \times 10^{-4}$开始，依次提高Learning Rate为$1 \times 10^{-3}$, $1 \times 10^{-2}$, $1 \times 10^{-1}$, 观察Learning Rate在哪个数量级表现最好，并且能平衡模型收敛所需要的Epoch. 我们在这个数量级上进一步调试，直到选择一个比较好的Learning Rate进入下一步调参。
