@@ -65,6 +65,20 @@ def show_some_data(dataset, num=1):
         cnt += 1
 
 
+def show_kernel(model, writer):
+    # 可视化卷积核
+    for name, param in model.named_parameters():
+        torch.no_grad()
+        if 'conv' in name and 'weight' in name:
+            in_channels = param.size()[1]
+            out_channels = param.size()[0]  # 输出通道，表示卷积核的个数
+            k_w, k_h = param.size()[3], param.size()[2]  # 卷积核的尺寸
+            kernel_all = param.view(-1, 1, k_w, k_h)  # 每个通道的卷积核
+            # print(kernel_all)
+            # kernel_grid = torchvision.utils.make_grid(kernel_all)
+            torchvision.utils.save_image(kernel_all / 255.0, "test_lenet_batch128.jpg")
+
+
 setup_seed(2021)
 
 # 定义是否使用GPU
@@ -132,10 +146,10 @@ trainset_amplied3 = torchvision.datasets.CIFAR10(root='./data', train=True, down
                                                  transform=transform_train_amplified3)
 
 # Show some results of data augmentation
-show_some_data(trainset_org)
-show_some_data(trainset_amplied1)
-show_some_data(trainset_amplied2)
-show_some_data(trainset_amplied3)
+# show_some_data(trainset_org)
+# show_some_data(trainset_amplied1)
+# show_some_data(trainset_amplied2)
+# show_some_data(trainset_amplied3)
 
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)  # 训练数据集
 
@@ -178,83 +192,78 @@ if __name__ == "__main__":
 
     with SummaryWriter(comment='model') as w:
         w.add_graph(net, dummy_input)
-        with open("acc.txt", "w") as acc_file:
-            with open("log.txt", "w") as log_file:
-                for epoch in range(pre_epoch, EPOCH):
-                    print('\nEpoch: %d' % (epoch + 1))
-                    net.train()
-                    sum_loss = 0.0
-                    correct = 0.0
-                    total = 0.0
-                    for i, data in enumerate(trainloader, 0):
-                        # preparation
-                        length = len(trainloader)
-                        inputs, labels = data
-                        inputs, labels = inputs.to(device), labels.to(device)
-                        optimizer.zero_grad()
+        with open("acc_lenet_batch128_testset.txt", "w") as acc_file:
+            with open("log_lenet_batch128.txt", "w") as log_file:
+                with open("acc_lenet_batch128_trainset.txt", "w") as acc_train_file:
+                    for epoch in range(pre_epoch, EPOCH):
+                        print('\nEpoch: %d' % (epoch + 1))
+                        net.train()
+                        sum_loss = 0.0
+                        correct = 0.0
+                        total = 0.0
+                        for i, data in enumerate(trainloader, 0):
+                            # preparation
+                            length = len(trainloader)
+                            inputs, labels = data
+                            inputs, labels = inputs.to(device), labels.to(device)
+                            optimizer.zero_grad()
 
-                        # forward + backward
-                        outputs = net(inputs)
-                        loss = criterion(outputs, labels)
-                        loss.backward()
-                        optimizer.step()
+                            # forward + backward
+                            outputs = net(inputs)
+                            loss = criterion(outputs, labels)
+                            loss.backward()
+                            optimizer.step()
 
-                        # 每训练1个batch打印一次loss和准确率
-                        sum_loss += loss.item()
-                        _, predicted = torch.max(outputs.data, 1)
-                        total += labels.size(0)
-                        correct += predicted.eq(labels.data).cpu().sum()
-                        print('[epoch:%d, iter:%d] Loss: %.03f | Acc: %.3f%% '
-                              % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), 100. * correct / total))
-                        log_file.write('%03d  %05d |Loss: %.03f | Acc: %.3f%% '
-                                       %
-                                       (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1),
-                                        100. * correct / total))
-                        log_file.write('\n')
-                        log_file.flush()
-                        w.add_scalar('scalar/train_loss', sum_loss / (i + 1))
-                        w.add_scalar('scalar/train_acc', 100. * correct / total)
-
-                    print("Starting test...")
-                    with torch.no_grad():
-                        correct = 0
-                        total = 0
-                        for data in testloader:
-                            net.eval()
-                            images, labels = data
-                            images, labels = images.to(device), labels.to(device)
-                            outputs = net(images)
+                            # 每训练1个batch打印一次loss和准确率
+                            sum_loss += loss.item()
                             _, predicted = torch.max(outputs.data, 1)
                             total += labels.size(0)
-                            correct += (predicted == labels).sum()
-                        print('测试分类准确率为：%.3f%%' % (100 * correct / total))
+                            correct += predicted.eq(labels.data).cpu().sum()
+                            print('[epoch:%d, iter:%d] Loss: %.03f | Acc: %.3f%% '
+                                  % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), 100. * correct / total))
+                            log_file.write('%03d  %05d |Loss: %.03f | Acc: %.3f%% '
+                                           %
+                                           (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1),
+                                            100. * correct / total))
+                            log_file.write('\n')
+                            log_file.flush()
+                            w.add_scalar('scalar/train_loss', sum_loss / (i + 1))
+                            w.add_scalar('scalar/train_acc', 100. * correct / total)
+
+                        # 一个epoch结束，训练集准确率写入文件
                         acc = 100. * correct / total
-                        print('Saving model......')
-                        # torch.save(net.state_dict(), '%s/net_%03d.pth' % (args.outf, epoch + 1))
-                        w.add_scalar('scalar/test_acc', acc, global_step=epoch)
-                        acc_file.write("EPOCH=%03d,Accuracy= %.3f%%" % (epoch + 1, acc))
-                        acc_file.write('\n')
-                        acc_file.flush()
-                        # 记录最佳测试分类准确率并写入best_acc.txt文件中
-                        if acc > best_acc:
-                            with open("best_acc.txt", "w") as f:
-                                f.write("EPOCH=%d,best_acc= %.3f%%" % (epoch + 1, acc))
-                                f.close()
-                                best_acc = acc
-                    scheduler.step()
+                        acc_train_file.write("EPOCH=%03d,Accuracy= %.3f%%" % (epoch + 1, acc))
+                        acc_train_file.write('\n')
+                        acc_train_file.flush()
 
+                        print("Starting test...")
+                        with torch.no_grad():
+                            correct = 0
+                            total = 0
+                            for data in testloader:
+                                net.eval()
+                                images, labels = data
+                                images, labels = images.to(device), labels.to(device)
+                                outputs = net(images)
+                                _, predicted = torch.max(outputs.data, 1)
+                                total += labels.size(0)
+                                correct += (predicted == labels).sum()
+                            print('测试分类准确率为：%.3f%%' % (100 * correct / total))
+                            acc = 100. * correct / total
+                            print('Saving model......')
+                            # torch.save(net.state_dict(), '%s/net_%03d.pth' % (args.outf, epoch + 1))
+                            w.add_scalar('scalar/test_acc', acc, global_step=epoch)
+                            acc_file.write("EPOCH=%03d,Accuracy= %.3f%%" % (epoch + 1, acc))
+                            acc_file.write('\n')
+                            acc_file.flush()
+                            # 记录最佳测试分类准确率并写入best_acc.txt文件中
+                            if acc > best_acc:
+                                with open("best_acc.txt", "w") as f:
+                                    f.write("EPOCH=%d,best_acc= %.3f%%" % (epoch + 1, acc))
+                                    f.close()
+                                    best_acc = acc
+                        scheduler.step()
 
-                def show_kernel(model, writer):
-                    # 可视化卷积核
-                    for name, param in model.named_parameters():
-                        torch.no_grad()
-                        if 'conv' in name and 'weight' in name:
-                            in_channels = param.size()[1]
-                            out_channels = param.size()[0]  # 输出通道，表示卷积核的个数
-                            k_w, k_h = param.size()[3], param.size()[2]  # 卷积核的尺寸
-                            kernel_all = param.view(-1, 1, k_w, k_h)  # 每个通道的卷积核
-                            # print(kernel_all)
-                            kernel_grid = torchvision.utils.make_grid(kernel_all)
     show_kernel(net, w)
     print("Training Finished, TotalEPOCH=%d" % EPOCH)
 

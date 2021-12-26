@@ -104,9 +104,9 @@
 CIFAR-10 数据集由60000张图片组成，每张图片的大小为32 $\times$ 32，RGB三通道。整个数据集都被标记为十个标签的一种。数据集在下载后已经被分为5个训练Batch和1个测试Batch。每个Batch都包含10000张图片。\cite{krizhevsky2009learning}
 
 \subsection{工作概述}
-此Project进行CIFAR-10数据集的图像分类，需要基于CNN。由于数据集已经进行打包，我们直接使用数据集的训练集-测试集分类方法。需要完成的工作包括数据预处理，设计模型，设计训练策略，实际训练，进行训练总结（以文字和可视化的形式）。模型使用Pytorch工具，基于\url{https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html}. \\
+此Project进行CIFAR-10数据集的图像分类，需要基于CNN。由于数据集已经进行打包，我们直接使用数据集的训练集-测试集分类方法。我们完成的工作包括数据预处理，设计模型，设计训练策略，实际训练，进行训练总结（以文字和可视化的形式）。模型使用Pytorch工具，基于\url{https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html}. \\
 \indent
-在没有使用额外数据以及预训练模型的前提下，我们设计的模型准确率达到了90\%，参数大小为83MB. 此外，按照要求，随机数种子被设为2021，便于审阅我们的结果。
+在没有使用额外数据以及预训练模型的前提下，我们设计的模型准确率最高达到了92\%， 参数大小为83MB. 此外，按照要求，随机数种子被设为2021，便于审阅我们的结果。
 
 \subsection {相关工作}
 在\url{https://paperswithcode.com/sota/image-classification-on-cifar-10} 中含有使用此数据集模型排名。主流模型包括Transformer\cite{dosovitskiy2021image}，ResNet\cite{kolesnikov2020big}，EfficientNet\cite{tan2021efficientnetv2}，DCN\cite{sousa2021cnn}，ResNeXt\cite{Li_2019_CVPR}等。\\
@@ -121,7 +121,6 @@ CIFAR-10 数据集由60000张图片组成，每张图片的大小为32 $\times$ 
 \item 随机仿射变换(Random Affine)
 \item 颜色抖动(Color Jitter)
 \end{itemize}
-
 
 \begin{figure}[H]
 	\centering
@@ -144,7 +143,7 @@ CIFAR-10 数据集由60000张图片组成，每张图片的大小为32 $\times$ 
 	\caption{原始数据集，扩充数据集1(随机裁剪+随机水平翻转+随机仿射变换)，扩充数据集2(随机放射变换)，扩充数据集3(颜色抖动)}
 \end{figure}
 通过图像增强，我们扩充了数据集，为训练提供了更多样本。
-\section{模型设计}
+\section{系统设计}
 \subsection{架构选择}
 ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015deep} 他的提出让CNN的层数由原来的不到十层提高到了上百层甚至上千层。人们发现随着CNN层数的增多，模型准确度反而下降。而这不能用过拟合来解释（因为训练集和测试集的Loss都同步上升），而随着BN大部分解决了梯度消失/爆炸问题后，模型退化问题仍然存在。
 \\ 
@@ -162,18 +161,31 @@ ResNet提出了Shortcut方法，引入了恒等映射，让模型拥有了“什
 \end{figure}
 \\
 \indent
-但是，在层数升至50层以上时，即使使用多块RTX3080显卡进行训练，也需要数小时甚至十余小时才能完成训练。我们优先将有限的资源使用在了低层数的ResNet上。特别对ResNet18（便于调参与快速训练查看结果）以及ResNet50（较好的平衡了层数和训练资源）进行了调参和训练。
+但是，在层数升至50层以上时，即使使用多块RTX3080显卡进行训练，也需要数小时甚至十余小时才能完成训练。我们优先将有限的资源使用在了低层数的ResNet上。特别对ResNet18（便于调参与快速训练查看结果）以及ResNet50（较好的平衡了层数和训练资源）进行了调参和训练。在最后，我们尝试进行了ResNet101的训练，事实证明，ResNet让层数升高时CNN的效果也随着变好。
 
 \subsection{优化器}
-常见的优化器包括SGD，Adam，LAMB. 大部分的卷积神经网络都采用了SGD作为优化器，少许采用了Adam作为优化器。上述的Benchmark Top1\cite{dosovitskiy2021image}模型指出了在ResNet50模型中，Adam和SGD的表现是几乎没有任何差别的。因此，我们简单地采用阅读论文时的观察和建议，选择了SGD作为优化器。
+常见的优化器包括SGD, Adam, LAMB. 大部分的卷积神经网络都采用了SGD作为优化器，少许采用了Adam作为优化器，近几年的ResNet论文也有建议采用LAMB的。上述的Benchmark Top 1\cite{dosovitskiy2021image}模型指出了在ResNet50模型中，Adam和SGD的表现是几乎没有任何差别的。因此，我们简单的采用阅读论文时的观察和建议，选择了SGD作为优化器。
+
+\subsection {损失函数}
+尽管有人指出\cite{beyer2020imagenet}ResNet损失函数使用Binary Cross Entropy Loss的表现略好于Cross Entropy Loss，但我们并没有把重点放在损失函数的选取上。我们选择了多分类问题最常使用的Cross Entropy Loss函数。
+
+\subsection{Epoch}
+在模型超参数调试完成之后，我们发现每次Epoch在我们的训练集群上需要20S左右训练。考虑到训练和实验的总规模，我们把Epoch总数定为100和300两个MileStone. 100达到时按要求记录报告准确率，300为最大迭代次数，主要为了挖掘模型的最大准确率。
+
+\subsection{其他模型选择}
+除了ResNet，我们还调研并且使用典型参数运行了一些在ResNet出现之前的较浅的CNN模型，包括Vgg16，Inception10, Alexnet8. 我们阅读了这些模型的Tensorflow实现并且试着本地运行了他们，还尝试使用Pytorch重写了一遍。我们将结果呈现如下：（结果为Tensorflow版本，因为本地资源只配置了Tensorflow的CUDA）
 
 
-\section{训练计划}
+
+\section{实验与结果}
 \subsection{平台}
 使用了矩池云平台进行训练，租用了至多4块RTX3080 Ti显卡，CPU为8 $\times$ Xeon E5-2682 v4核心，86G内存。系统环境为Python3.7，CUDA 11.1，cuDNN 8.0.5，Pytorch 1.8.1， Horovod 0.22.1，Ubuntu 18.04.
 
-\subsection{Baseline}
-
+\subsection{选择调试超参数}
+尽管我们尽可能提高了算力，但是限于ResNet的高层数， 我们的实验次数受到了限制，从而选择了如下参数进行调试：
+\begin{itemize}
+\item 1
+\end{itemize}
 
 \section{模板介绍}
 这个模板是UTF-8编码的，使用xeCJK宏包，中英文混排更美观，但编译速度稍慢。注意：该模板只能用xelatex编译。常用逻辑符号命令：
