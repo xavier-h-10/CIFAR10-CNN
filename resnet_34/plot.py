@@ -44,7 +44,7 @@ def plot_all(output, xs, ys, labels, suffix=''):
         x, y, label = xs[i][0:min_len], ys[i][0:min_len], labels[i] + suffix
         plt.plot(x, y, label=label)
     plt.legend()
-    plt.savefig(output)
+    plt.savefig(output, dpi=1000)
     plt.show()
     plt.cla()
 
