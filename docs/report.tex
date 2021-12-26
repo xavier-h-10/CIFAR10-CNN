@@ -198,6 +198,8 @@ ResNet论文中提出了两种Residual Function. 分别应用于ResNet34-以及R
 \subsection{选择调试超参数}
 尽管我们尽可能提高了算力，但是限于ResNet的高层数， 我们的实验次数受到了限制，只能选择有限的超参数进行调试。ResNet论文\cite{he2015deep}为一些超参数提供了建议，比如Batch Size为128, lr为0.1.基于此，使用ResNet18架构，我们选择了以下参数进行调试：
 \begin{itemize}
+	\item Loss funtion: 损失函数指明了模型的训练目标, 我们对此进行了调研
+	\item Epochs: Epochs过高可能导致过拟合，准确率下降。我们通过调研排除了这种可能
 	\item Batch size: 每次翻倍调整Batch size直到计算资源不能支持
 	\item Learning Rate: 从$10 ^ {-4}$跨数量级调试lr
 	\item Learning Rate Decay: 对比pytorch中学习率调整方法
@@ -205,7 +207,7 @@ ResNet论文中提出了两种Residual Function. 分别应用于ResNet34-以及R
 \end{itemize}
 
 \subsection {损失函数}
-损失函数指明了模型的训练目标。尽管有人指出\cite{beyer2020imagenet}ResNet损失函数使用Binary Cross Entropy Loss的表现略好于Cross Entropy Loss，但我们并没有把重点放在损失函数的选取上。我们选择了多分类问题最常使用的Cross Entropy Loss函数。
+尽管有人指出\cite{beyer2020imagenet}ResNet损失函数使用Binary Cross Entropy Loss的表现略好于Cross Entropy Loss，但我们并没有把重点放在损失函数的选取上。我们选择了多分类问题最常使用的Cross Entropy Loss函数。
 
 \subsection{Epoch}
 在模型超参数调试完成之后，我们发现每次Epoch在我们的训练集群上需要20S左右训练。考虑到训练和实验的总规模，我们把Epoch总数定为100和300两个MileStone. 100 Epochs达到时按要求记录报告准确率，200为最大迭代次数，时为了挖掘模型的最大准确率。我们阅读的论文有许多模型都会运行多达600个或者更多Epochs，限于算力，我们只运行200个并且保存测试集上工作的最好的参数报告。
@@ -271,8 +273,11 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 	\end{tabular}
 \end{table}
 
-\subsection{Tensorboard 数据}
+\subsection{训练过程回顾}
 
+\subsubsection{Tensorboard 数据}
+
+\subsubsection{图示训练过程}
 
 \section{Appendix A}
 在选择方向的过程中，我们回顾了自从CNN提出以来的各种变体以及其成绩，并且获取了一些Tensorflow实现并且运行。您可以在./others里面查看这些模型并且复现结果。由于数据对显存要求远大于对显卡性能要求，我们没有保持硬件环境的一致。
@@ -282,13 +287,13 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 		Arch name   & Hardware      & Param size & Epochs & Batch size & Running time & Accuracy \\ \hline
 		VGG16       & Nvidia 2080Ti & 183.10 MB  & 100    & 32         & 61 mins      & 76.20\%  \\ \hline
 		alexnet8    & Nvidia T80    & 115.67 MB  & 100    & 32         & 145 mins     & 61.62\%  \\ \hline
-		resnet18-tf & Nvidia 2080Ti & 134.16 MB  & 100    & 32         &              &          \\ \hline
-		inception10 & Nvidia 2080Ti & 1.51 MB    & 100    & 32         &              &          \\ \hline
+		resnet18-tf & Nvidia 2080Ti & 134.16 MB  & 100    & 32         & 59 mins     & 61.50\%    \\ \hline
+		inception10 & Nvidia 2080Ti & 1.51 MB    & 100    & 32         &              &  73.66\%    \\ \hline
 	\end{tabular}
 \end{table}
 \\
 \indent
-我们借此快速了解了各个模型的特点和能力，选择了ResNet继续研究。下图是这些模型的准确度，损失函数对于Epochs的图像：
+我们借此快速了解了各个模型的特点和能力，并且经过进一步了解，选择了ResNet继续研究。下图是这些模型的准确度，损失函数对于Epochs的图像：
 \begin{figure}[H]
 	\centering
 	\subfigure[Alex8Net]{
