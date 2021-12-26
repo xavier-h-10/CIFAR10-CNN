@@ -5,7 +5,7 @@ import torchvision
 import torchvision.transforms as transforms
 import argparse
 from resnet import ResNet18
-from resnet_all import ResNet34, ResNet50
+from resnet_all import ResNet34, ResNet101
 import numpy as np
 import random
 import ssl
@@ -74,7 +74,7 @@ args = parser.parse_args()
 EPOCH = 135  # 遍历数据集次数
 pre_epoch = 0  # 定义已经遍历数据集的次数
 BATCH_SIZE = 128  # 批处理尺寸(batch_size)
-LR = 0.1  # 学习率
+LR = 8e-3  # 学习率
 mean = [0.4914, 0.4822, 0.4465]
 std = [0.2023, 0.1994, 0.2010]
 
@@ -136,7 +136,7 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False,
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
 # net = ResNet18().to(device)
-net = ResNet18().to(device)
+net = ResNet101().to(device)
 
 # net = ResNet50().to(device)
 
@@ -239,3 +239,7 @@ if __name__ == "__main__":
                             kernel_grid = torchvision.utils.make_grid(kernel_all)
     show_kernel(net, w)
     print("Training Finished, TotalEPOCH=%d" % EPOCH)
+
+# 若释放前不需要保存环境
+os.system(
+    "export $(cat /proc/1/environ |tr '\\0' '\\n' | grep MATCLOUD_CANCELTOKEN)&&/public/script/matncli node cancel -url https://matpool.com/api/public/node")
