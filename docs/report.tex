@@ -286,6 +286,29 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 		inception10 & Nvidia 2080Ti & 1.51 MB    & 100    & 32         &              &          \\ \hline
 	\end{tabular}
 \end{table}
+\\
+\indent
+我们借此快速了解了各个模型的特点和能力，选择了ResNet继续研究。下图是这些模型的准确度，损失函数对于Epochs的图像：
+\begin{figure}[H]
+	\centering
+	\subfigure[Alex8Net]{
+		\centering
+		\includegraphics[width=0.4\linewidth]{alex8}
+	}
+	\subfigure[Vgg16]{
+		\centering
+		\includegraphics[width=0.4\linewidth]{vgg16}
+	}
+	\subfigure[Inception10]{
+		\centering
+		\includegraphics[width=0.4\linewidth]{inception10}
+	}
+	\subfigure[ResNet18]{
+		\centering
+		\includegraphics[width=0.4\linewidth]{augment3}
+	}
+	\caption{四种架构的朴素实现的实验结果}
+\end{figure}
 
 \section{模板介绍}
 这个模板是UTF-8编码的，使用xeCJK宏包，中英文混排更美观，但编译速度稍慢。注意：该模板只能用xelatex编译。常用逻辑符号命令：
