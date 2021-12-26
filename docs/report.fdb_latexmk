@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1640496395 "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.tex" "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.pdf" "report" 1640496395
+["pdflatex"] 1640506915 "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.tex" "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.pdf" "report" 1640506915
   "c:/texlive/2020/texmf-dist/fonts/map/fontname/texfonts.map" 1615200967 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2020/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1615200293 1004 54797486969f23fa377b128694d548df ""
   "c:/texlive/2020/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1615200293 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -154,13 +154,13 @@
   "c:/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1615202622 4851253 a533a4526d7bf069c355e34a42d65ce7 ""
   "c:/texlive/2020/texmf-var/web2c/pdftex/pdflatex.fmt" 1615202773 2432404 9ea9849b9fceda84c79fb03328e5ef1c ""
   "c:/texlive/2020/texmf.cnf" 1615202599 673 4ae7b2f49cee444c5343a45b5d0f169c ""
-  "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.aux" 1640496393 4538 b0a27e265acaa42069a368ccee00d286 ""
-  "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.tex" 1640496389 17379 0a71629be9cfbe596d6ad57693d3e664 ""
-  "report.aux" 0 -1 0 "pdflatex"
-  "report.tex" 1640496389 17379 0a71629be9cfbe596d6ad57693d3e664 ""
+  "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.aux" 1640506914 0 d41d8cd98f00b204e9800998ecf8427e ""
+  "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.tex" 1640506907 20055 a70a5c318a56a8e5decfe34b31339e9e ""
+  "report.aux" 1640506914 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "report.tex" 1640506907 20055 a70a5c318a56a8e5decfe34b31339e9e ""
   (generated)
-  "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.log"
-  "report.log"
   "report.pdf"
-  "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.pdf"
+  "report.log"
   "report.aux"
+  "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.log"
+  "e:/GithubRepo/CNN/CIFAR10-CNN/docs/report.pdf"

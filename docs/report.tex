@@ -1,4 +1,4 @@
-\documentclass[UTF8,12pt]{article} % 12pt 为字号大小
+\documentclass[hyperref, UTF8, 12pt]{article}
 \usepackage{amssymb,amsfonts,amsmath,amsthm,latexsym}
 \usepackage{subfigure}
 \usepackage{float}
@@ -65,8 +65,6 @@
 %网址
 \usepackage{url}
 
-
-
 %----------
 % 习题与解答环境
 %----------
@@ -89,7 +87,6 @@
 \fi
 
 \renewcommand{\proofname}{\it{证明}}
-
 
 %==========
 % 正文部分
@@ -164,7 +161,7 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 \end{figure}
 \\
 \indent
-但是，在层数升至50层以上时，即使使用多块RTX3080 Ti显卡进行训练，也需要数小时甚至十余小时才能完成训练。我们优先将有限的资源使用在了低层数的ResNet上。特别对ResNet18（便于调参与快速训练查看结果）以及ResNet50（较好的平衡了层数和训速度源）进行了调参和训练。在最后，我们尝试进行了ResNet101的训练，事实证明，ResNet让层数升高时CNN的效果也随着变好。
+但是，在层数升至50层以上时，即使使用多块RTX3080 Ti显卡进行训练，也需要数小时甚至十余小时才能完成训练。我们优先将有限的资源使用在了低层数的ResNet上。特别对ResNet18（便于调参与快速训练查看结果）以及ResNet50（较好的平衡了层数和训练速度）进行了调参和训练。在最后，我们尝试进行了ResNet101的训练，事实证明，ResNet让模型层数更高，准确度也变得更好。
 \\
 \indent
 
@@ -172,7 +169,7 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 除了ResNet，我们还调研并且使用典型参数运行了一些在ResNet出现之前的较浅的CNN模型，包括vgg16，Inception10, alexnet8. 我们阅读了这些模型的Tensorflow实现并且试着本地运行了他们。您可以在Appendix A中审阅这些结果。我们发现无论Epochs小或者大，这些模型的训练结果都明显不如我们选择的ResNet. 因此，我们没有对这些模型进行进一步的调参和设计。
 
 \subsection{ResNet架构说明}
-上面提到了ResNet为新增加的层数引入了恒等映射的可能。我们希望能多$F(x) = H(x) - x$进行学习，因此学习到的原始特征应为$F(x) + x$. 这样残差为0时就时是恒等映射了。\\
+上面提到了ResNet为新增加的层数引入了恒等映射的可能。我们希望能对$F(x) = H(x) - x$进行学习，因此学习到的原始特征应为$F(x) + x$. 这样残差为0时就时是恒等映射了。\\
 \begin{figure}[h] %H为当前位置，!htb为忽略美学标准，htbp为浮动图形
 	\centering %图片居中
 	\includegraphics[width=0.5\textwidth]{resnetUnit.png} %插入图片，[]中设置图片大小，{}中是图片文件名
@@ -180,13 +177,19 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 	\label{Fig.resnet2} %用于文内引用的标签
 \end{figure}
 \indent
-ResNet论文中提出了两种Residual Function. 分别应用于ResNet34-以及ResNet50+. 我们采用了这种模型设计。您可以在resnet\_all.py下面看到我们实现的两个残差单元~\ref{Fig.resnet2}，分别命名为BasicBlock和BottleNeck. 模型的全部架构都是由论文ImageNet架构指导~\ref{Fig.resnet1}对残差单元~\ref{Fig.resnet2}进行组装得到的。\\
+ResNet论文中提出了两种Residual Function. 分别应用于ResNet34-以及ResNet50+. 我们采用了这种模型设计。您可以在resnet\_all.py下面看到我们实现的两个残差单元~\ref{Fig.resnet4}，分别命名为BasicBlock(left one)和BottleNeck(right one). 模型的全部架构都是由论文ImageNet架构指导~\ref{Fig.resnet1}对残差单元~\ref{Fig.resnet4}进行组装得到的。\\
+\begin{figure}[h] %H为当前位置，!htb为忽略美学标准，htbp为浮动图形
+	\centering %图片居中
+	\includegraphics[width=0.95\textwidth]{resnet2units.png} %插入图片，[]中设置图片大小，{}中是图片文件名
+	\caption{ResNet 论文中的两种Unit，我们在代码中分别进行了实现} %最终文档中希望显示的图片标题
+	\label{Fig.resnet4} %用于文内引用的标签
+\end{figure}
 \indent
 此外，我们将超参数抽离为变量，将数据预处理，模型调用和结果展示记录抽取出来，放在train.py中方便进行训练，实验和展示。您可以在上述两个代码文件中审阅我们的模型和训练计划。下图是结合了残差单元和架构说明对ResNet18的架构进行了更加清晰的展示。
 \begin{figure}[h] %H为当前位置，!htb为忽略美学标准，htbp为浮动图形
 	\centering %图片居中
 	\includegraphics[width=0.95\textwidth]{resnet18.png} %插入图片，[]中设置图片大小，{}中是图片文件名
-	\caption{ResNet 论文中的unit} %最终文档中希望显示的图片标题
+	\caption{ResNet18 展开} %最终文档中希望显示的图片标题
 	\label{Fig.resnet3} %用于文内引用的标签
 \end{figure}
 
@@ -208,7 +211,7 @@ ResNet论文中提出了两种Residual Function. 分别应用于ResNet34-以及R
 在模型超参数调试完成之后，我们发现每次Epoch在我们的训练集群上需要20S左右训练。考虑到训练和实验的总规模，我们把Epoch总数定为100和300两个MileStone. 100 Epochs达到时按要求记录报告准确率，200为最大迭代次数，时为了挖掘模型的最大准确率。我们阅读的论文有许多模型都会运行多达600个或者更多Epochs，限于算力，我们只运行200个并且保存测试集上工作的最好的参数报告。
 
 \subsection{Batch size}
-我们从8开始，依次调整Batch Size为8, 16, 32, 64, 128, 256. 其中，Batch Size为256时，根据论文\cite{he2015deep} 建议，我们将learning rate 设置为了默认值的$110\%$. 由于显存限制，我们无法进一步提高Batch Size，否则训练速度可能会快速下降。实验完成后，我们选择最好的Batch Size进行下一步调试。
+我们从8开始，依次调整Batch Size为8, 16, 64, 128, 256. 其中，Batch Size为256时，根据论文\cite{he2015deep} 建议，我们将learning rate 设置为了默认值的$110\%$. 由于显存限制，我们无法进一步提高Batch Size，否则训练速度可能会快速下降。实验完成后，我们选择最好的Batch Size进行下一步调试。
 
 \subsection{Learning rate}
 我们从$1 \times 10^{-4}$开始，依次提高Learning Rate为$1 \times 10^{-3}$, $1 \times 10^{-2}$, $1 \times 10^{-1}$, 观察Learning Rate在哪个数量级表现最好，并且能平衡模型收敛所需要的Epoch. 我们在这个数量级上进一步调试，直到选择一个比较好的Learning Rate进入下一步调参。
@@ -237,10 +240,52 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 
 \subsection{实验结果}
 根据超参数调试结果，我们将基于准确率，训练时间，参数大小报告我们的实验结果。
+\subsubsection{最终实验数据}
+\begin{table}[h]
+	\begin{tabular}{|l|l|l|l|l|l|}
+		\hline
+		Arch name & LR       & LR decay & Epochs   & Batch size & Warmup epochs \\ \hline
+		Res18     & 4.20E+07 & cosine   & 1.68E+06 & 1.06E+06   & 5             \\ \hline
+		Res50     & 8.55E+02 & cosine   & 3.42E+01 & 2.16E+01   & 5              \\ \hline
+		Res101    & 1.17E+03 & cosine   & 2.93E+04 & 4.64E+04   &  5            \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h]
+	\begin{tabular}{|l|l|l|l|l|l|}
+		\hline
+		Arch name & Optimizer& Weight decay & Droupout   & Loss           \\ \hline
+		Res18     & 4.20E+07 &         	    & No 	     & Cross Entropy  \\ \hline
+		Res50     & 8.55E+02 &              & No         & Cross Entropy  \\ \hline
+		Res101    & 1.17E+03 &              & No         & Cross Entropy  \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h]
+	\begin{tabular}{|l|l|l|l|l|l|}
+		\hline
+		Arch name & Running time & Hardware     & Param size     & Accuracy 	 \\ \hline
+		Res18     & 4.20E+07     & 4.20E+07     & Cross Entropy  & 1897MB        \\ \hline
+		Res50     & 8.55E+02     & 4.20E+07     & Cross Entropy  & LEVEL 8       \\ \hline
+		Res101    & 1.17E+03     & 4.20E+07      & Cross Entropy &               \\ \hline
+	\end{tabular}
+\end{table}
 
 \subsection{Tensorboard 数据}
 
 
+\section{Appendix A}
+在选择方向的过程中，我们回顾了自从CNN提出以来的各种变体以及其成绩，并且获取了一些Tensorflow实现并且运行。您可以在./others里面查看这些模型并且复现结果。由于数据对显存要求远大于对显卡性能要求，我们没有保持硬件环境的一致。
+\begin{table}[h]
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		Arch name   & Hardware      & Param size & Epochs & Batch size & Running time & Accuracy \\ \hline
+		VGG16       & Nvidia 2080Ti & 183.10 MB  & 100    & 32         & 61 mins      & 76.20\%  \\ \hline
+		alexnet8    & Nvidia T80    & 115.67 MB  & 100    & 32         & 145 mins     & 61.62\%  \\ \hline
+		resnet18-tf & Nvidia 2080Ti & 134.16 MB  & 100    & 32         &              &          \\ \hline
+		inception10 & Nvidia 2080Ti & 1.51 MB    & 100    & 32         &              &          \\ \hline
+	\end{tabular}
+\end{table}
 
 \section{模板介绍}
 这个模板是UTF-8编码的，使用xeCJK宏包，中英文混排更美观，但编译速度稍慢。注意：该模板只能用xelatex编译。常用逻辑符号命令：
