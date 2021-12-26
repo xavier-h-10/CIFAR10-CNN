@@ -166,8 +166,7 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 \indent
 此外，基于我们阅读的文献和现有资料，我们确定了一些常用的模型典型值，从而减少了没有必要的调参工作。说明如下。
 
-\subsection{优化器}
-常见的优化器包括SGD, Adam, LAMB. 大部分的卷积神经网络都采用了SGD作为优化器，少许采用了Adam作为优化器，近几年的ResNet论文也有建议采用LAMB的。上述的Benchmark Top 1\cite{dosovitskiy2021image}论文中指出了在ResNet50模型中，Adam和SGD的表现是几乎没有任何差别的。\cite{QuoraAnswer}因此，我们简单的采用阅读论文时的观察和建议，选择了SGD作为优化器。
+
 
 \subsection {损失函数}
 尽管有人指出\cite{beyer2020imagenet}ResNet损失函数使用Binary Cross Entropy Loss的表现略好于Cross Entropy Loss，但我们并没有把重点放在损失函数的选取上。我们选择了多分类问题最常使用的Cross Entropy Loss函数。
@@ -188,6 +187,8 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 	\item Batch Size: 
 \end{itemize}
 
+\subsubsection{优化器}
+常见的优化器包括SGD, Adam, LAMB. 大部分的卷积神经网络都采用了SGD作为优化器，也有人采用Adam作为优化器，近几年的ResNet论文也有建议采用LAMB的。上述的Benchmark Top 1\cite{dosovitskiy2021image}论文中指出了在ResNet50模型中，各个优化器的表现是几乎没有任何差别的。根据一个DL科学家的回答\cite{QuoraAnswer}，使用SGD With momentum 因此，我们简单的采用阅读论文时的观察和建议，选择了SGD With momentum.
 
 \section{实验与结果}
 \subsection{平台}
