@@ -286,7 +286,11 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 	\caption{ResNet18使用原始数据集和扩充数据集的训练结果}
 	\label{fig:resnet18_amp}
 \end{figure}
-扩充过的数据集的规模是原始数据集的四倍（包含原始数据集加上三个经过数据强化过的副本）。通过数据增强，我们获得了更多的数据样本。实验结果说明，这些数据样本提升了模型的准确率。随机翻转、随机仿射变换和颜色抖动等噪音使得模型学习到了更多特殊情况，增强了模型的泛化能力和鲁棒性。与此同时，虽然样本数增多，但是ResNet自身的BN层等设计降低了过拟合发生的概率，最终得到了很高的测试集准确率。为了对比，我们还训练了ResNet101，不难发现两者的最终结果相差的不多。通过预处理我们的模型预测能力获得了惊人的提升。
+扩充过的数据集的规模是原始数据集的四倍（包含原始数据集加上三个经过数据强化过的副本）。通过数据增强，我们获得了更多的数据样本。实验结果说明，这些数据样本提升了模型的准确率。随机翻转、随机仿射变换和颜色抖动等噪音使得模型学习到了更多特殊情况，增强了模型的泛化能力和鲁棒性。
+
+\noindent 与此同时，虽然样本数增多，但是ResNet自身的BN层等设计降低了过拟合发生的概率，最终得到了很高的测试集准确率。为了对比，我们还训练了ResNet-101，不难发现两者的最终结果相差的不多。通过预处理我们的模型预测能力获得了惊人的提升。
+
+\noindent 此外，我们发现，所有模型在训练集上的表现均显著优于测试集。以ResNet-18为例，在batch\_size=64，且不加入数据增强的情况下，训练集的准确率可以达到100$\%$，但是测试集的准确率始终在85$\%$左右徘徊。这一现象的主要原因可能是测试集与训练集的分布差异(distribution gap); 另一部分原因可能是适应性差异(adaptivity gap), 即模型对于训练集产生了适应性的过拟合(adaptive overfitting)。\cite{cifar2018} 因此我们对训练集进行了数据增强，可以在一定程度上缓解这个问题。
 
 \subsection{实验结果}
 根据超参数调试结果，我们将基于准确率，训练时间，参数大小报告我们的实验结果。
@@ -358,11 +362,11 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 		\begin{tabular}{l|l|l|l|l|l|l}
 			\toprule
 			Arch name   & Hardware            & Param size & Epochs & Batch size & Running time & Accuracy \\ \midrule
-			VGG16       & Nvidia 2080Ti       & 183.10 MB  & 100    & 32         & 61 mins      & 76.20\%  \\ \midrule
+			VGG16       & Nvidia 3080 Ti       & 183.10 MB  & 100    & 32         & 61 mins      & 76.20\%  \\ \midrule
 			alexnet8    & Nvidia Tesla T80    & 115.67 MB  & 100    & 32         & 145 mins     & 61.62\%  \\ \midrule
 			resnet18-tf & Nvidia Tesla T4     & 134.16 MB  & 100    & 32         & 120 mins     & 73.07\%    \\ \midrule
-			inception10 & Nvidia 2080Ti       & 1.51 MB    & 100    & 32         & 59 mins      &  61.50\%    \\ \midrule
-			lenet5 		& Nvidia Tesla T4     & 未记录      & 100    & 32         & 15 mins      &  56.87\%    \\ \bottomrule
+			inception10 & Nvidia 3080 Ti       & 1.51 MB    & 100    & 32         & 59 mins      &  61.50\%    \\ \midrule
+			lenet5 		& Nvidia 3080 Ti       & 0.24 MB    & 100    & 32         & 30 mins      &  56.87\%    \\ \bottomrule
 		\end{tabular}
 	}
 \end{table}
