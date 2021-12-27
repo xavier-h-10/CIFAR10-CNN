@@ -89,6 +89,7 @@
 
 \renewcommand{\proofname}{\it{证明}}
 
+
 %==========
 % 正文部分
 %==========
@@ -96,7 +97,7 @@
 \begin{document}
 
 \title{基于卷积神经网络的图像分类系统}
-\author{SJTU}
+\author{李逸岩 黄喆敏 林子宏}
 %\date{} % 若不需要自动插入日期，则去掉前面的注释；{ } 中也可以自定义日期格式
 \maketitle
 
@@ -104,13 +105,16 @@
 CIFAR-10 数据集由60000张图片组成，每张图片的大小为32 $\times$ 32，RGB三通道。整个数据集都被标记为十个标签的一种。数据集在下载后已经被分为5个训练Batch和1个测试Batch。每个Batch都包含10000张图片。\cite{krizhevsky2009learning}
 
 \subsection{工作概述}
-此Project进行CIFAR-10数据集的图像分类，需要基于CNN。由于数据集已经进行打包，我们直接使用数据集的训练集-测试集分类方法。我们完成的工作包括数据预处理，设计模型，设计训练策略，实际训练，进行训练总结（以文字和可视化的形式）。模型使用Pytorch工具，基于\url{https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html}. \\
+此Project进行CIFAR-10数据集的图像分类，需要基于CNN。由于数据集已经进行打包，我们直接使用数据集的训练集-测试集分类方法。我们完成的工作包括数据预处理，设计模型，设计训练策略，实际训练，进行训练总结（以文字和可视化的形式）。我们的模型使用了Pytorch 1.8.1, CUDA 11.1, cuDNN 8.0.5，基于\url{https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html}。 \\
 \indent
-在没有使用额外数据以及预训练模型的前提下，我们设计的模型准确率最高达到了92\%, 参数大小为83MB. 此外，按照要求，随机数种子被设为2021，便于审阅我们的结果; 如果想复现我们的结果，请参阅README.md.
+在没有使用额外数据以及预训练模型的前提下，我们设计的模型\textbf{准确率最高达到了92\%, 参数大小为83MB}。 此外，按照要求，随机数种子被设为2021，便于审阅我们的结果; 如果想复现我们的结果，请参阅README.md。
 
-\subsection {相关工作}
+\subsection {相关研究}
 在\url{https://paperswithcode.com/sota/image-classification-on-cifar-10} 中含有使用此数据集模型排名。主流模型包括Transformer\cite{dosovitskiy2021image}，ResNet\cite{kolesnikov2020big}，EfficientNet\cite{tan2021efficientnetv2}，DCN\cite{sousa2021cnn}，ResNeXt\cite{Li_2019_CVPR}等。\\
-\indent 从2012年有记录以来，年度最佳模型的准确率从88.8\%提高到了99.5\%。发表于2021CVPR的ViT-H/14将准确率提高到了99.5\%\cite{dosovitskiy2021image}，而使用CNN的FlexConv在达到92.2\%以上准确率的同时\cite{romero2021flexconv}，保证了自己的参数大小约为0.67MB，约为准确率最高的模型的$\frac{1}{1000}$.
+
+\indent 2015年何恺明等人提出的ResNet模型\cite{resnet2016}是图像识别领域的一个里程碑，它引入了残差模块，解决了CNN中深度网络难以训练的问题。近年来，\textbf{Transformer}模型开始崭露头角。传统意义上，Transformer领域主要用来解决自然语言处理的相关任务。然而，最近一些文章开创性地\textbf{将Transformer模型跨领域地引用到了计算机视觉中}。这些文章所提出的模型用self-attention机制替代CNN中的卷积操作，并且取得了很好的效果。\cite{dosovitskiy2021image}
+
+\indent 对于此Project使用的CIFAR-10数据集，从2012年有记录以来，SOTA模型的准确率从88.8\%提高到了99.5\%。发表于2021CVPR的ViT-H/14将准确率提高到了99.5\%\cite{dosovitskiy2021image}，而使用CNN的FlexConv在达到92.2\%以上准确率的同时\cite{romero2021flexconv}，保证了自己的参数大小约为0.67MB，约为准确率最高的模型的$\frac{1}{1000}$。
 
 
 \section{数据处理}
@@ -152,7 +156,7 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 为了解决这个问题，ResNet提出了Shortcut方法，引入了恒等映射，让模型拥有了“什么都不做”的选择，有效防止了更多的层数带来的信息丢失。而更多的层数为分层学习提供了可能，每一层学到更细化的特征，提高了模型的表达能力；从而提高了模型的准确度。
 \\ 
 \indent
-因此，我们的模型是基于ResNet的基本框架进行调参的。在ResNet论文\cite{he2015deep}中提出了5种ResNet模型，即ResNet18，ResNet34，ResNet50，ResNet101，ResNet152. 数字代表的是层数，我们尝试复现了以下框架。\ref{Fig.resnet1}
+因此，我们的模型是基于ResNet的基本框架进行调参的。在ResNet论文\cite{he2015deep}中提出了5种ResNet模型，即ResNet-18，ResNet-34，ResNet-50，ResNet-101，ResNet-152. 数字代表的是层数，我们尝试复现了以下框架。\ref{Fig.resnet1}
 %% 一张
 \begin{figure}[h] %H为当前位置，!htb为忽略美学标准，htbp为浮动图形
 	\centering %图片居中
@@ -162,12 +166,12 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 \end{figure}
 \\
 \indent
-但是，在层数升至50层以上时，即使使用多块RTX3080 Ti显卡进行训练，也需要数小时甚至十余小时才能完成训练。我们优先将有限的资源使用在了低层数的ResNet上。特别对ResNet18（便于调参与快速训练查看结果）以及ResNet50（较好的平衡了层数和训练速度）进行了调参和训练。在最后，我们尝试进行了ResNet101的训练，事实证明，ResNet让模型层数更高，准确度也变得更好。
+但是，在层数升至50层以上时，即使使用多块RTX3080 Ti显卡进行训练，也需要数小时甚至十余小时才能完成训练。我们优先将有限的资源使用在了低层数的ResNet上。特别对ResNet-18（便于调参与快速训练查看结果）以及ResNet50（较好的平衡了层数和训练速度）进行了调参和训练。在最后，我们尝试进行了ResNet-101的训练，事实证明，ResNet让模型层数更高，准确度也变得更好。
 \\
 \indent
 
 \subsubsection{其他模型选择}
-除了ResNet，我们还调研并且使用典型参数运行了一些在ResNet出现之前的较浅的CNN模型，包括vgg16，Inception10, alexnet8. 我们阅读了这些模型的Tensorflow实现并且试着本地运行了他们。您可以在Appendix A中审阅这些结果。我们发现无论Epochs小或者大，这些模型的训练结果都明显不如我们选择的ResNet. 因此，我们没有对这些模型进行进一步的调参和设计。
+除了ResNet，我们还调研并且使用典型参数运行了一些在ResNet出现之前的较浅的CNN模型，包括vgg-16，Inception-10, alexnet-8. 我们阅读了这些模型的Tensorflow实现并且试着本地运行了他们。您可以在Appendix A中审阅这些结果。我们发现无论Epochs小或者大，这些模型的训练结果都明显不如我们选择的ResNet. 因此，我们没有对这些模型进行进一步的调参和设计。
 
 \subsection{ResNet架构说明}
 上面提到了ResNet为新增加的层数引入了恒等映射的可能。我们希望能对$F(x) = H(x) - x$进行学习，因此学习到的原始特征应为$F(x) + x$. 这样残差为0时就时是恒等映射了。\\
@@ -178,7 +182,7 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 	\label{Fig.resnet2} %用于文内引用的标签
 \end{figure}
 \indent
-ResNet论文中提出了两种Residual Function. 分别应用于ResNet34-以及ResNet50+. 我们采用了这种模型设计。您可以在resnet\_all.py下面看到我们实现的两个残差单元~\ref{Fig.resnet4}，分别命名为BasicBlock(left one)和BottleNeck(right one). 模型的全部架构都是由论文ImageNet架构指导~\ref{Fig.resnet1}对残差单元~\ref{Fig.resnet4}进行组装得到的。\\
+ResNet论文中提出了两种Residual Function。 一种应用于ResNet-18、ResNet-34较浅的网络，另一种应用于ResNet-50及更深的网络。 我们采用了这种模型设计。您可以在resnet\_all.py下面看到我们实现的两个残差单元~\ref{Fig.resnet4}，分别命名为BasicBlock(left one)和BottleNeck(right one). 模型的全部架构都是由论文ImageNet架构指导~\ref{Fig.resnet1}对残差单元~\ref{Fig.resnet4}进行组装得到的。\\
 \begin{figure}[h] %H为当前位置，!htb为忽略美学标准，htbp为浮动图形
 	\centering %图片居中
 	\includegraphics[width=0.95\textwidth]{resnet2units.png} %插入图片，[]中设置图片大小，{}中是图片文件名
@@ -190,7 +194,7 @@ ResNet论文中提出了两种Residual Function. 分别应用于ResNet34-以及R
 \begin{figure}[h] %H为当前位置，!htb为忽略美学标准，htbp为浮动图形
 	\centering %图片居中
 	\includegraphics[width=0.95\textwidth]{resnet18.png} %插入图片，[]中设置图片大小，{}中是图片文件名
-	\caption{ResNet18 展开} %最终文档中希望显示的图片标题
+	\caption{ResNet-18 网络结构图} %最终文档中希望显示的图片标题
 	\label{Fig.resnet3} %用于文内引用的标签
 \end{figure}
 
@@ -231,7 +235,7 @@ pytorch中主要支持6种学习率调整方法。一般而言，训练初期给
 
 \section{实验与结果}
 \subsection{平台}
-使用了矩池云平台进行训练，租用了至多4块RTX3080 Ti显卡，CPU为8 $\times$ Xeon E5-2682 v4核心，86G内存。系统环境为Python3.7，CUDA 11.1，cuDNN 8.0.5，Pytorch 1.8.1， Horovod 0.22.1，Ubuntu 18.04.
+由于ResNet对于GPU的要求较高，特别地，当batch\_size较大时，会产生显存不够的情况。因此，我们使用了矩池云平台进行训练，租用了至多4块RTX3080 Ti显卡，CPU为8 $\times$ Xeon E5-2682 v4核心，86G内存，可同时训练至少4个模型。同时对于层数较多的模型，我们采取了2块GPU并行训练的方法。系统环境为Python3.7，CUDA 11.1，cuDNN 8.0.5，Pytorch 1.8.1， Horovod 0.22.1，Ubuntu 18.04。
 
 \subsection{示例代码}
 使用示例代码运行100 Epochs查看结果作为Baseline.
