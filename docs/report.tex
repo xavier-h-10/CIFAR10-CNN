@@ -184,7 +184,7 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 	\label{Fig.resnet2} %用于文内引用的标签
 \end{figure}
 \indent
-ResNet论文中提出了两种Residual Function。 一种应用于ResNet-18、ResNet-34较浅的网络，另一种应用于ResNet-50及更深的网络。 我们采用了这种模型设计。您可以在resnet\_all.py下面看到我们实现的两个残差单元~\ref{Fig.resnet4}，分别命名为BasicBlock(left one)和BottleNeck(right one). 模型的全部架构都是由论文ImageNet架构指导~\ref{Fig.resnet1}对残差单元~\ref{Fig.resnet4}进行组装得到的。\\
+ResNet论文中提出了两种残差函数（Residual Function）。 一种应用于ResNet-18、ResNet-34较浅的网络，另一种应用于ResNet-50及更深的网络。 我们采用了这种模型设计。您可以在resnet\_all.py下面看到我们实现的两个残差单元~\ref{Fig.resnet4}。左图适用于层数较浅的网络，右图加入了\textbf{瓶颈层}（Bottle Neck Layer），可以减少参数的数量，适用于层数较深的网络。模型的全部架构都是由论文架构指导~\ref{Fig.resnet1}对残差单元~\ref{Fig.resnet4}进行组装得到的，在常见的数据集，例如CIFAR-10，ImageNet等，都有很好的表现。\\
 \begin{figure}[h] %H为当前位置，!htb为忽略美学标准，htbp为浮动图形
 	\centering %图片居中
 	\includegraphics[width=0.95\textwidth]{resnet2units.png} %插入图片，[]中设置图片大小，{}中是图片文件名
@@ -192,7 +192,7 @@ ResNet论文中提出了两种Residual Function。 一种应用于ResNet-18、Re
 	\label{Fig.resnet4} %用于文内引用的标签
 \end{figure}
 \indent
-此外，我们将超参数抽离为变量，将数据预处理，模型调用和结果展示记录抽取出来，放在train.py中方便进行训练，实验和展示。您可以在上述两个代码文件中审阅我们的模型和训练计划。下图是结合了残差单元和架构说明对ResNet18的架构进行了更加清晰的展示。
+此外，我们将超参数抽离为变量，将数据预处理，模型调用和结果展示记录抽取出来，放在train.py中方便进行训练，实验和展示。您可以在上述两个代码文件中审阅我们的模型和训练计划。下图是结合了残差单元和架构说明对ResNet-18的架构进行了更加清晰的展示。
 \begin{figure}[h] %H为当前位置，!htb为忽略美学标准，htbp为浮动图形
 	\centering %图片居中
 	\includegraphics[width=0.95\textwidth]{resnet18.png} %插入图片，[]中设置图片大小，{}中是图片文件名
@@ -203,14 +203,14 @@ ResNet论文中提出了两种Residual Function。 一种应用于ResNet-18、Re
 
 \section{训练方法}
 \subsection{超参数调试方法}
-尽管我们尽可能提高了算力，但是限于ResNet的高层数， 我们的实验次数受到了限制，只能选择有限的超参数进行调试。ResNet论文\cite{he2015deep}为一些超参数提供了建议，比如Batch Size为128, lr为0.1。基于此，使用ResNet18架构，我们选择了以下参数进行调试：
+尽管我们尽可能提高了算力，但是限于ResNet的高层数， 我们的实验次数受到了限制，只能选择有限的超参数进行调试。ResNet论文\cite{he2015deep}为一些超参数提供了建议，比如batch size为128, learning rate为0.1。基于此，使用ResNet-18架构，我们选择了以下参数进行调试：
 \begin{itemize}
 	\item Loss funtion: 损失函数指明了模型的训练目标, 我们对此进行了调研
 	\item Epochs: Epochs过高可能导致过拟合，准确率下降。我们通过调研排除了这种可能
-	\item Batch size: 每次翻倍调整Batch size直到计算资源不能支持
+	\item Batch size: 每次翻倍调整batch size，直到占用的资源超过显存大小
 	\item Learning Rate: 从$10 ^ {-4}$跨数量级调试lr
 	\item Learning Rate Decay: 对比pyTorch中学习率调整方法
-	\item Optimizer: 阅读论文筛选出了两个优化器进行比较, 同时调整优化器参数，包括weight decay 和momentum.
+	\item Optimizer: 阅读论文筛选出了两个优化器进行比较, 同时调整优化器参数，包括weight decay 和momentum。
 \end{itemize}
 
 \subsection {损失函数}
