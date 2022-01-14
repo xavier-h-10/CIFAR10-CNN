@@ -146,7 +146,8 @@ CIFAR-10 数据集由60000张图片组成，每张图片的大小为32 $\times$ 
 	}
 	\caption{原始数据集，扩充数据集1(随机裁剪+随机水平翻转+随机仿射变换)，扩充数据集2(随机放射变换)，扩充数据集3(颜色抖动)。}
 \end{figure}
-通过图像增强，我们扩充了数据集，为训练提供了更多样本。
+通过图像增强，我们扩充了数据集，为训练提供了更多样本。数据增强的效果，对比与可能有效的原因您可以在5.3.4查看。
+
 \section{系统设计}
 \subsection{架构选择}
 \subsubsection{ResNet}
@@ -167,7 +168,7 @@ ResNet是时下应用最广泛的基于CNN的图像分类模型。\cite{he2015de
 %% 一张
 \begin{figure}[h] %H为当前位置，!htb为忽略美学标准，htbp为浮动图形
 	\centering %图片居中
-	\includegraphics[width=0.7\textwidth]{resnet.png} %插入图片，[]中设置图片大小，{}中是图片文件名
+	\includegraphics[width=0.85\textwidth]{resnet.png} %插入图片，[]中设置图片大小，{}中是图片文件名
 	\caption{ResNet 论文中给出的模型结构} %最终文档中希望显示的图片标题
 	\label{Fig.resnet1} %用于文内引用的标签
 \end{figure}
@@ -209,13 +210,13 @@ ResNet论文中提出了两种残差函数（Residual Function）。 一种应�
 
 \section{训练方法}
 \subsection{超参数调试方法}
-尽管我们尽可能提高了算力，但是限于ResNet的高层数， 我们的实验次数受到了限制，只能选择有限的超参数进行调试。ResNet论文\cite{he2015deep}为一些超参数提供了建议，比如batch\_size为128, learning rate为0.1。基于此，使用ResNet-18架构，我们选择了以下参数进行调试：
+尽管我们尽可能提高了算力，但是限于ResNet的高层数， 我们的实验次数受到了限制，只能选择有限的超参数进行调试。ResNet论文\cite{he2015deep}为一些超参数提供了建议，比如Batch size为128, learning rate为0.1。基于此，使用ResNet-18架构，我们选择了以下参数进行调试：
 \begin{itemize}
 	\item Loss function: 损失函数指明了模型的训练目标, 我们对此进行了调研。
 	\item Epochs: epoch过高可能导致过拟合，准确率下降。我们在一定的范围内选取epoch。
-	\item Batch size: 我们调整batch\_size至不同的数量级，直到占用的资源超过显存大小。
+	\item Batch size: 我们调整Batch size至不同的数量级，直到占用的资源超过显存大小。
 	\item Learning Rate: 我们从$10 ^ {-4}$开始，每隔一个量级，调整学习率大小。
-	\item Learning Rate Decay: 我们选取pyTorch中几种学习率调整方法进行比较。
+	\item Learning Rate Decay: 我们选取PyTorch中几种学习率调整方法进行比较。
 	\item Optimizer: 我们阅读论文，筛选出了SGD和Adam这两个优化器进行比较。\cite{keskar2017improving}同时调整优化器参数，包括weight decay 和momentum。
 \end{itemize}
 
@@ -223,12 +224,12 @@ ResNet论文中提出了两种残差函数（Residual Function）。 一种应�
 尽管有人指出ResNet损失函数使用Binary Cross Entropy Loss的表现略好于Cross Entropy Loss\cite{beyer2020imagenet}，但我们并没有把重点放在损失函数的选取上。我们选择了多分类问题最常使用的Cross Entropy Loss函数。
 
 \subsection{Epoch}
-在模型超参数调试完成之后，我们发现每次epoch在我们的训练集群上需要20秒左右训练。考虑到训练和实验的总规模，我们把epoch总数定为100和300两个milestore。 100 epochs达到时按要求记录报告准确率。为了挖掘模型的最大准确率，我们手动设置了200 epochs为最大的迭代次数，超过200 epochs自动停止。
+在模型超参数调试完成之后，我们发现每次epoch在我们的训练集群上需要20秒左右训练。考虑到训练和实验的总规模，我们把epoch总数定为100和200两个milestore。 100 epochs达到时按要求记录报告准确率。为了挖掘模型的最大准确率，我们手动设置了200 epochs为最大的迭代次数，超过200 epochs自动停止。
 当然，许多模型会运行300个甚至更多epochs，以提高准确度。\cite{xie2017aggregated}限于算力，我们只运行200个并且保存测试集上工作的最好的参数报告。
 
 \subsection{Batch size}
-我们从8开始，依次调整batch\_size为8, 16, 64, 128, 256。其中，batch\_size为256时，根据ResNet论文\cite{he2015deep} 建议，我们将learning rate设置为默认值的$110\%$，并且使用了2块GPU并行训练，满足显存要求。
-由于显存限制，我们无法进一步提高batch\_size，否则训练速度可能会迅速下降。实验完成后，我们选择最好的batch\_size进行下一步调试。
+我们从8开始，依次调整Batch size为8, 16, 64, 128, 256。其中，Batch size为256时，根据ResNet论文\cite{he2015deep} 建议，我们将learning rate设置为默认值的$110\%$，并且使用了2块GPU并行训练，满足显存要求。
+由于显存限制，我们无法进一步提高Batch size，否则训练速度可能会迅速下降。实验完成后，我们选择最好的Batch size进行下一步调试。
 
 \subsection{Learning rate}
 我们从$1 \times 10^{-4}$开始，依次提高learning rate为$1 \times 10^{-3}$, $1 \times 10^{-2}$, $1 \times 10^{-1}$, 观察learning rate在哪个数量级表现最好，并且能平衡模型收敛所需要的时间。我们在这个数量级上进一步调试，直到选择一个比较好的learning rate进入下一步调参。
@@ -246,15 +247,15 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 
 \section{实验与结果}
 \subsection{平台}
-由于ResNet对于GPU的要求较高，特别地，当batch\_size较大时，会产生显存不够的情况。因此，我们使用了矩池云平台进行训练，租用了至多4块RTX3080 Ti显卡，CPU为8 $\times$ Xeon E5-2682 v4核心，86G内存，可同时训练至少4个模型。同时对于层数较多的模型，我们采取了2块GPU并行训练的方法。系统环境为Python3.7，CUDA 11.1，cuDNN 8.0.5，PyTorch 1.8.1，Horovod 0.22.1，Ubuntu 18.04。
+由于ResNet对于GPU的要求较高，特别地，当Batch size较大时，会产生显存不够的情况。因此，我们使用了矩池云平台进行训练，租用了至多4块RTX3080 Ti显卡，CPU为8 $\times$ Xeon E5-2682 v4核心，86G内存，可同时训练至少4个模型。同时对于层数较多的模型，我们采取了2块GPU并行训练的方法。系统环境为Python3.7，CUDA 11.1，cuDNN 8.0.5，PyTorch 1.8.1，Horovod 0.22.1，Ubuntu 18.04。
 
 \subsection{示例代码}
 使用示例代码运行100 epochs查看结果作为baseline。
 
 \subsection{超参数调试结果}
-\subsubsection{batch\_size}
-在合理范围内，增大batch\_size可以提高显存的利用率，矩阵乘法的并行效率提高，跑完一次epoch所需的迭代次数减少。但是，当batch\_size过大时，显存容量可能不够，并且对参数的修正会更加缓慢。
-因此，我们以ResNet-18为基准，按照8，32，64，128的顺序不断调整batch\_size进行测试，得到图\ref{fig:resnet18_batchsize}所示的结果。
+\subsubsection{Batch size}
+在合理范围内，增大Batch size可以提高显存的利用率，矩阵乘法的并行效率提高，跑完一次epoch所需的迭代次数减少。但是，当Batch size过大时，显存容量可能不够，并且对参数的修正会更加缓慢。
+因此，我们以ResNet-18为基准，按照8，32，64，128的顺序不断调整Batch size进行测试，得到图\ref{fig:resnet18_batchsize}所示的结果。
 \begin{figure}[H]
 	\centering
 	\subfigure[训练集损失曲线]{
@@ -265,12 +266,12 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 		\centering
 		\includegraphics[width=0.45\linewidth]{test_acc_batchsize}
 	}
-	\caption{ResNet-18在不同batch\_size下的表现。}
+	\caption{ResNet-18在不同Batch size下的表现。}
 	\label{fig:resnet18_batchsize}
 \end{figure}
-当batch\_size为128时，无论是训练集损失还是测试集准确率的变化都比较平稳。在训练速度较快的同时，也能更好地利用GPU资源。受限于硬件资源，我们没有尝试更大的batch\_size。
+当Batch size为128时，无论是训练集损失还是测试集准确率的变化都比较平稳。在训练速度较快的同时，也能更好地利用GPU资源。受限于硬件资源，我们没有尝试更大的Batch size。
 \subsubsection{Learning rate}
-基于上述结果，我们继续使用以128为batch\_size的ResNet-18。依次以$8\times10^{-1}$，$8\times10^{-2}$，$8\times10^{-4}$进行训练，最终得到图\ref{fig:resnet18_lr}所示的结果。
+基于上述结果，我们继续使用以128为Batch size的ResNet-18。依次以$8\times10^{-1}$，$8\times10^{-2}$，$8\times10^{-4}$进行训练，最终得到图\ref{fig:resnet18_lr}所示的结果。
 \begin{figure}[H]
 	\centering
 	\subfigure[训练集损失曲线]{
@@ -306,7 +307,7 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 
 与此同时，虽然样本数增多，但是ResNet自身的BN层等设计降低了过拟合发生的概率，最终得到了很高的测试集准确率。为了对比，我们还训练了ResNet-101，不难发现两者的最终结果相差的不多。通过预处理我们的模型预测能力获得了惊人的提升。
 
-此外，我们发现，所有模型在训练集上的表现均显著优于测试集。以ResNet-18为例，在batch\_size=64，且不加入数据增强的情况下，训练集的准确率可以达到100$\%$，但是测试集的准确率始终在85$\%$左右徘徊。这一现象的主要原因可能是测试集与训练集的分布差异(distribution gap); 另一部分原因可能是适应性差异(adaptivity gap), 即模型对于训练集产生了适应性的过拟合(adaptive overfitting)。\cite{cifar2018} 因此我们对训练集进行了数据增强，可以在一定程度上缓解这个问题。
+此外，我们发现，所有模型在训练集上的表现均显著优于测试集。以ResNet-18为例，在Batch size=64，且不加入数据增强的情况下，训练集的准确率可以达到100$\%$，但是测试集的准确率始终在85$\%$左右徘徊。这一现象的主要原因可能是测试集与训练集的分布差异(distribution gap); 另一部分原因可能是适应性差异(adaptivity gap), 即模型对于训练集产生了适应性的过拟合(adaptive overfitting)。\cite{cifar2018} 因此我们对训练集进行了数据增强，可以在一定程度上缓解这个问题。
 
 \subsection{实验结果}
 根据超参数调试结果，我们将基于准确率，训练时间，参数大小报告我们的实验结果。
@@ -354,11 +355,11 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 \subsubsection{训练数据}
 我们对上述训练过程进行总结。所有模型的训练集误差均以较快的速度下降并在最终趋于平稳，但是准确率因模型的参数选定和结构而异。我们针对不同的参数进行了较多的测试，并将测试数据和LeNet进行比较，如图\ref{fig:total}所示。模型所用的参数如图例所示。其中，ResNet-50模型采用了2块GPU并行训练，其余均采用1块GPU训练。
 
-\textbf{对于batch size}，我们分别尝试了batch\_size=$8 / 32 / 64 / 128$的情况，此时learning\_rate$=8\times 10^{-3}$保持不变。
+\textbf{对于batch size}，我们分别尝试了Batch size=$8 / 32 / 64 / 128$的情况，此时learning\_rate$=8\times 10^{-3}$保持不变。
 
-\textbf{对于learning rate}，我们分别尝试了learning\_rate=$8\times 10^{-4} / 8\times10^{-3} / 8\times10^{-2} / 8\times10^{-1}$的情况，且保持batch\_size=128不变。
+\textbf{对于learning rate}，我们分别尝试了learning\_rate=$8\times 10^{-4} / 8\times10^{-3} / 8\times10^{-2} / 8\times10^{-1}$的情况，且保持Batch size=128不变。
 
-\textbf{对于图像增强是否能提高训练速度/准确率}，我们设计了两个模型进行比较。两个模型均为ResNet-18模型，batch\_size=128，learning\_rate=$8\times10^(-3)$。其中一个模型的训练集使用了图像增强的训练集，另一个使用原始训练集。
+\textbf{对于图像增强是否能提高训练速度/准确率}，我们设计了两个模型进行比较。两个模型均为ResNet-18模型，Batch size=128，learning\_rate=$8\times10^(-3)$。其中一个模型的训练集使用了图像增强的训练集，另一个使用原始训练集。
 
 其中，除了ResNet-18模型learning\_rate$=8\times 10^{-1}$时，\textbf{学习率较大导致无法收敛}，所有的模型均好过LeNet。ResNet使得CNN网络可以非常深，以提取更深层次的特征，提升了准确率。但是一些未选定合适超参数的模型的表现可能还不如LeNet。这说明了选择合适参数的重要性。在深度学习领域，模型和参数是配套的，缺一不可。
 \begin{figure}[H]
