@@ -67,28 +67,6 @@
 %网址
 \usepackage{url}
 
-%----------
-% 习题与解答环境
-%----------
-%习题环境
-\theoremstyle{definition} 
-\newtheorem{exs}{习题}
-
-%解答环境
-\ifx\proof\undefined\
-\newenvironment{proof}[1][\protect\proofname]{\par
-\normalfont\topsep6\p@\@plus6\p@\relax
-\trivlist
-\itemindent\parindent
-\item[\hskip\labelsep
-\scshape
-#1]\ignorespaces
-}{%
-\endtrivlist\@endpefalse
-}
-\fi
-
-\renewcommand{\proofname}{\it{证明}}
 
 
 %==========
@@ -278,18 +256,18 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 	\centering
 	\subfigure[训练集损失曲线]{
 		\centering
-		\includegraphics[width=0.45\linewidth]{train_loss_lr}
+		\includegraphics[width=0.45\linewidth]{train_loss_lr_1}
 	}
 	\subfigure[测试集准确率]{
 		\centering
-		\includegraphics[width=0.45\linewidth]{test_acc_lr}
+		\includegraphics[width=0.45\linewidth]{test_acc_lr_1}
 	}
 	\caption{ResNet18在不同learning rate下的表现}
 	\label{fig:resnet18_lr}
 \end{figure}
-结果表明过大的学习率可能导致准确率震荡的现象，而较小的学习率也可能会导致最终结果不够精确。对于ResNet-18而言，$8\times10^{-2}$是较为合适的学习率——训练速度较快且训练过程波动小，较为稳定。
+结果表明过大的学习率可能导致准确率震荡的现象，而较小的学习率也可能会导致最终结果不够精确。对于ResNet-18而言，$8\times10^{-3}$和$8\times10^{-2}$都是较为合适的学习率——训练速度较快且训练过程波动小，较为稳定。最终我们选取$8\times10^{-3}$作为学习率。
 \subsubsection{优化器}
-
+在经过初步尝试后，我们发现
 \subsubsection{预处理}
 前文提到了我们使用的预处理方法。我们针对未扩充的原始数据集和扩充过的数据集进行了对照试验。图\ref{fig:resnet18_amp}展示了这一实验结果。
 \begin{figure}[H]
