@@ -1,3 +1,5 @@
+# 加载数据 加快速度
+
 import platform
 from six.moves import cPickle as pickle
 

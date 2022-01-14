@@ -217,7 +217,7 @@ ResNet论文中提出了两种残差函数（Residual Function）。 一种应�
 	\item Loss function: 损失函数指明了模型的训练目标, 我们对此进行了调研。
 	\item Epochs: epoch过高可能导致过拟合，准确率下降。我们在一定的范围内选取epoch。
 	\item Batch size: 我们调整Batch size至不同的数量级，直到占用的资源超过显存大小。
-	\item Learning Rate: 我们从$10 ^ {-4}$开始，每隔一个量级，调整学习率大小。
+	\item Learning Rate: 我们从$8\times 10 ^ {-4}$开始，每隔一个量级，调整学习率大小。
 	\item Learning Rate Decay: 我们选取PyTorch中几种学习率调整方法进行比较。
 	\item Optimizer: 我们阅读论文，筛选出了SGD和Adam这两个优化器进行比较。\cite{keskar2017improving}同时调整优化器参数，包括weight decay 和momentum。
 \end{itemize}
