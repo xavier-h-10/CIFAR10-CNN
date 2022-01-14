@@ -243,7 +243,7 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 \indent
 根据一个深度学习科学家的回答\cite{QuoraAnswer}，使用带动量的梯度下降法（SGD with momentum）更擅长于寻找"high-quality and flat"的局部最小值，而Adam则更容易找到"sharp"的局部最小值。前者带来了更好的泛化性和更低的性能损失，而且能够在其他超参数没有调试好的前提下带来还不错的结果。\\
 \indent
-我们同时尝试了SGD with momentum和 Adam, 其中前者的momentum 和weight\_decay 都采用了SGD优化器中的默认值，也即$momentum = 0.9, weight decay = 5 \times 10 ^ {-4}$；而Adam优化器的参数采纳了官方文档的推荐值，也即$lr = 1 \times 10^{-3}, \space betas=(0.9, 0.999), \space eps = 10 ^ {-8}, \space weight\_decay = 0$. (betas 为一阶和二阶的指数衰减率)我们对比了他们的效果，选择了相对更优秀的进行训练。
+我们同时尝试了SGD with momentum和 Adam, 其中前者的momentum 和weight\_decay 都采用了SGD优化器中的默认值，也即$momentum = 0.9, weight\_decay = 5 \times 10 ^ {-4}$；而Adam优化器的参数采纳了官方文档的推荐值，也即$lr = 1 \times 10^{-3}, \space betas=(0.9, 0.999), \space eps = 10 ^ {-8}, \space weight\_decay = 0$. (betas 为一阶和二阶的指数衰减率)我们对比了他们的效果，选择了相对更优秀的进行训练。
 
 \section{实验与结果}
 \subsection{平台}
@@ -378,7 +378,7 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 % \subsubsection{图示训练过程}
 
 \section{Appendix A}
-在选择方向的过程中，我们回顾了自从CNN提出以来的各种模型以及其在数据集上的表现，并且获取了一些TensorFlow实现并且运行。您可以在./others里面查看这些模型并且复现结果。由于在部分模型中，数据对显存要求大于对显卡性能要求，我们没有保持硬件环境的严格一致，以求在花费尽可能低的情况下查看他们的效果。
+在选择方向的过程中，我们回顾了自从CNN提出以来的各种模型以及其在数据集上的表现。对于这些模型，我们使用TensorFlow加以实现。您可以在./others里面查看这些模型并且复现结果。由于在部分模型中，数据对显存要求大于对显卡性能要求，我们没有保持硬件环境的严格一致，以求在花费尽可能低的情况下查看他们的效果。
 \begin{table}[h]
 	\centering
 	\caption{各类模型的运行结果}
