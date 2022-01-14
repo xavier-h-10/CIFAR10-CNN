@@ -316,7 +316,7 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 	\caption{模型超参数}
 	\begin{tabular}{l|l|l|l|l|l}
 		\toprule
-		Arch name & LR       & LR decay & Epochs   & batch\_size & Warmup epochs \\ \midrule
+		Arch name & LR       & LR decay & Epochs   & Batch size & Warmup epochs \\ \midrule
 		Res18     & 4.20E+07 & cosine   & 1.68E+06 & 1.06E+06   & 5             \\ \midrule
 		Res50     & 8.55E+02 & cosine   & 3.42E+01 & 2.16E+01   & 5              \\ \midrule
 		Res101    & 1.17E+03 & cosine   & 2.93E+04 & 4.64E+04   &  5            \\ \bottomrule
@@ -328,7 +328,7 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 	\caption{模型优化器和损失函数}
 	\begin{tabular}{l|l|l|l|l}
 		\toprule
-		Arch name & Optimizer& Weight decay & Droupout   & Loss           \\ \midrule
+		Arch name & Optimizer& Weight decay & Dropout   & Loss           \\ \midrule
 		Res18     & 4.20E+07 &         	    & No 	     & Cross Entropy  \\ \midrule
 		Res50     & 8.55E+02 &              & No         & Cross Entropy  \\ \midrule
 		Res101    & 1.17E+03 &              & No         & Cross Entropy  \\ \bottomrule
@@ -385,7 +385,7 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 	\setlength{\tabcolsep}{0.6mm}{
 		\begin{tabular}{l|l|l|l|l|l|l}
 			\toprule
-			Arch name   & Hardware            & Param size & Epochs & batch\_size & Running time & Accuracy \\ \midrule
+			Arch name   & Hardware            & Param size & Epochs & Batch size & Running time & Accuracy \\ \midrule
 			VGG16       & Nvidia 3080 Ti       & 183.10 MB  & 100    & 32         & 61 mins      & 76.20\%  \\ \midrule
 			alexnet8    & Nvidia Tesla T80    & 115.67 MB  & 100    & 32         & 145 mins     & 61.62\%  \\ \midrule
 			resnet18-tf & Nvidia Tesla T4     & 134.16 MB  & 100    & 32         & 120 mins     & 73.07\%    \\ \midrule
