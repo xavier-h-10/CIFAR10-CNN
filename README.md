@@ -1,4 +1,8 @@
-# README
+## CIFAR-10 Training Based on ResNet
+
+### 概述
+
+我们主要采用ResNet以及一些基础的模型，对CIFAR-10进行训练。
 
 ### 目录结构
 
@@ -6,42 +10,24 @@
 
 ```
 ├─code
-│  ├─basic_model			基本模型,如alexnet,lenet等
+│  ├─basic_model			基本模型,如AlexNet,Inception等
 │  ├─official_example       给定的样例模型
-│  └─resnet 				resnet相关模型
+│  └─resnet					ResNet相关模型
+│          lenet.py			使用LetNet作为基准进行比较
+│          plot.py			作图用	
+│          resnet.py	    定义了ResNet-18模型
+│          resnet_all.py	定义了ResNet-50以及更深的模型
+│          train.py			训练主要代码
 ├─docs 						报告
-|-image						输出的部分示意图
+|-image						输出的部分示意图(详见文档)
 └─result
     ├─basic_model			基本模型结果
-    └─resnet				resnet相关模型结果
+    └─resnet				ResNet相关模型结果
+    	├─accuracy			每一轮训练后的准确度
+        └─log				每一轮训练产生的log
 ```
 
-
-
-
-
-### 模型概述
-
-我们提供两种模型以供审阅，预计完成时间的运行环境使用一块RTX3080 Ti测出。
-
-| 模型名称  | 模型概述                              | 准确度 | 建议采用的Epochs数量 |
-| --------- | ------------------------------------- | ------ | -------------------- |
-| ResNet18  | 在保证准确率高于90%的前提下，更快完成 | 90.18% | 100                  |
-| ResNet101 | 更高准确率，但是运行时间可能更长      | 92.00% | 100                  |
-
-
-
-### Run ResNet18
-
-在最外层目录，`python ./cifar10_resnet_pytorch/trainer.py res18`即可运行。
-
-### Run ResNet101
-
-在最外层目录，`python ./cifar10_resnet_pytorch/trainer.py res101`即可运行。
-
-
-
-### 模型结果
+### 模型说明
 
 ResNet相关模型的结果存放在`./result/resnet`内，由于命名有一些复杂，因此此处进行详细说明。
 
@@ -59,3 +45,8 @@ ResNet相关模型的结果存放在`./result/resnet`内，由于命名有一些
 | resnet101_batch128     | 101      | 128       | 8e-3       |                       |
 | lenet_batch128         | 5        | 128       | 8e-3       | LeNet模型，对比用     |
 
+### 代码运行
+
+- 对于ResNet相关模型，运行``./code/resnet/train.py``即可，可根据注释调整模型层数、学习率等参数。
+- 对于基本模型，运行``./code/basic_model``下对应的文件即可。
+- 需要特别注意，由于我们进行了分工，因此ResNet相关模型采用了PyTorch进行训练，而基本模型采用了TensorFlow进行训练。

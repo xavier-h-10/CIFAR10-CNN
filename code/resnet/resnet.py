@@ -1,6 +1,3 @@
-'''ResNet-18 Image classfication for cifar-10 with PyTorch
-Author 'Sun-qian'.
-'''
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
