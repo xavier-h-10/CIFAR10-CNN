@@ -1,4 +1,4 @@
-\documentclass[hyperref, UTF8, 12pt]{article}
+\documentclass{article}
 \usepackage{amssymb,amsfonts,amsmath,amsthm,latexsym}
 \usepackage{subfigure}
 \usepackage{float}
@@ -12,6 +12,7 @@
 %----------
 
 \usepackage{xeCJK}
+\usepackage[pdfborder={0 0 1},colorlinks,linkcolor=red,anchorcolor=blue,citecolor=green]{hyperref}
 
 \setCJKmainfont[BoldFont={SimHei},ItalicFont={KaiTi}]{SimSun}
 \setCJKsansfont{SimHei}
@@ -114,7 +115,8 @@ CIFAR-10 数据集由60000张图片组成，每张图片的大小为32 $\times$ 
 
 \indent 2015年何恺明等人提出的ResNet模型\cite{resnet2016}是图像识别领域的一个里程碑，它引入了残差模块，解决了CNN中深度网络难以训练的问题；近年来，\textbf{Transformer}模型开始崭露头角。传统意义上，Transformer领域主要用来解决自然语言处理的相关任务。然而，最近一些文章开创性地\textbf{将Transformer模型跨领域地引用到了计算机视觉中}。这些文章所提出的模型用self-attention机制替代CNN中的卷积操作，并且取得了很好的效果。\cite{dosovitskiy2021image}
 
-\indent 对于此Project使用的CIFAR-10数据集，在\url{https://paperswithcode.com/sota/image-classification-on-cifar-10} 中含有使用此数据集模型排名。从2012年有记录以来，SOTA模型的准确率从88.8\%提高到了99.5\%。发表于CVPR2021的ViT-H/14将准确率提高到了99.5\%\cite{dosovitskiy2021image}，而使用CNN的FlexConv在达到92.2\%以上准确率的同时\cite{romero2021flexconv}，保证了自己的参数大小约为0.67MB，约为准确率最高的模型的$\frac{1}{1000}$。
+\indent 对于此Project使用的CIFAR-10数据集，在\\
+\url{https://paperswithcode.com/sota/image-classification-on-cifar-10} 中含有使用此数据集模型排名。从2012年有记录以来，SOTA模型的准确率从88.8\%提高到了99.5\%。发表于CVPR2021的ViT-H/14将准确率提高到了99.5\%\cite{dosovitskiy2021image}，而使用CNN的FlexConv在达到92.2\%以上准确率的同时\cite{romero2021flexconv}，保证了自己的参数大小约为0.67MB，约为准确率最高的模型的$\frac{1}{1000}$。
 
 
 \section{数据处理}
