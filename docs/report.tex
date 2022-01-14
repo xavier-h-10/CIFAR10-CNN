@@ -350,12 +350,11 @@ PyTorch中主要支持6种学习率调整方法。一般而言，训练初期给
 
 
 
-\subsection{训练过程回顾}
+\subsection{训练过程}
 
-\subsubsection{训练数据}
 我们对上述训练过程进行总结。所有模型的训练集误差均以较快的速度下降并在最终趋于平稳，但是准确率因模型的参数选定和结构而异。我们针对不同的参数进行了较多的测试，并将测试数据和LeNet进行比较，如图\ref{fig:total}所示。模型所用的参数如图例所示。其中，ResNet-50模型采用了2块GPU并行训练，其余均采用1块GPU训练。
 
-\textbf{对于batch size}，我们分别尝试了Batch size=$8 / 32 / 64 / 128$的情况，此时learning\_rate$=8\times 10^{-3}$保持不变。
+\textbf{对于Batch size}，我们分别尝试了Batch size=$8 / 32 / 64 / 128$的情况，此时learning\_rate$=8\times 10^{-3}$保持不变。
 
 \textbf{对于learning rate}，我们分别尝试了learning\_rate=$8\times 10^{-4} / 8\times10^{-3} / 8\times10^{-2} / 8\times10^{-1}$的情况，且保持Batch size=128不变。
 
